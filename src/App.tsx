@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ColorModeProvider } from '@/components/ui/color-mode'
 import SignIn from './pages/SignIn/SignIn'
 import Dashboard from './pages/Dashboard/Dashboard'
+import Projects from './pages/Projects/Projects'
 
 function App() {
 	return (
@@ -12,6 +13,7 @@ function App() {
 					<Route path='/' element={<Navigate to={'/login'} />} />
 					<Route path='/login' element={<SignIn />} />
 					<Route path='/dashboard' element={<Dashboard />} />
+					<Route path='/projects' element={<Projects />} />
 				</Routes>
 			</BrowserRouter>
 		</ColorModeProvider>

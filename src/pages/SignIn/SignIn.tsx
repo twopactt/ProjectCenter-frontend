@@ -55,7 +55,7 @@ function SignIn() {
 						<Button type='submit' className='button w-full'>
 							Войти
 						</Button>
-						<Link href='/dashboard' className='flex'>
+						<Link href='/projects' className='flex'>
 							Забыли пароль?
 						</Link>
 					</Card.Footer>
