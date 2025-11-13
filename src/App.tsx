@@ -1,12 +1,21 @@
 import './App.css'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { ColorModeProvider } from '@/components/ui/color-mode'
 import SignIn from './pages/SignIn/SignIn'
+import Dashboard from './pages/Dashboard/Dashboard'
 
-function App() {  
-  return (
-    <div>
-      <SignIn />
-    </div>
-  )
+function App() {
+	return (
+		<ColorModeProvider>
+			<BrowserRouter>
+				<Routes>
+					<Route path='/' element={<Navigate to={'/login'} />} />
+					<Route path='/login' element={<SignIn />} />
+					<Route path='/dashboard' element={<Dashboard />} />
+				</Routes>
+			</BrowserRouter>
+		</ColorModeProvider>
+	)
 }
 
 export default App
