@@ -5,19 +5,60 @@ import {
 	Card,
 	Checkbox,
 	Field,
+	FieldErrorText,
 	Input,
 	Link,
 	Stack,
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import ForgotPassword from './ForgotPassword'
 
 function SignIn() {
 	const [loginValue, setLoginValue] = useState('')
+	const [loginError, setLoginError] = useState(false)
+	const [loginErrorMessage, setLoginErrorMessage] = useState('')
 	const [password, setPasswordValue] = useState('')
+	const [passwordError, setPasswordError] = useState(false)
+	const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
+	const [open, setOpen] = useState(false)
 	const navigate = useNavigate()
 
-	const submit = async () => {
+	const handleClickOpen = () => {
+		setOpen(true)
+	}
+
+	const handleClose = () => {
+		setOpen(false)
+	}
+
+	const validateInputs = () => {
+		let isValid = true
+
+		if (!loginValue) {
+			setLoginError(true)
+			setLoginErrorMessage('Пожалуйста, введите корректный логин.')
+			isValid = false
+		} else {
+			setLoginError(false)
+			setLoginErrorMessage('')
+		}
+
+		if (!password) {
+			setPasswordError(true)
+			setPasswordErrorMessage('Пожалуйста, введите пароль.')
+			isValid = false
+		} else {
+			setPasswordError(false)
+			setPasswordErrorMessage('')
+		}
+
+		return isValid
+	}
+
+	const handleSubmit = async () => {
+		if (!validateInputs()) return
+
 		const result = await login({
 			login: loginValue,
 			password: password,
@@ -41,7 +82,7 @@ function SignIn() {
 					</Card.Header>
 					<Card.Body>
 						<Stack className='!gap-4 w-full'>
-							<Field.Root>
+							<Field.Root invalid={loginError}>
 								<Field.Label>Логин</Field.Label>
 								<Input
 									value={loginValue}
@@ -53,8 +94,11 @@ function SignIn() {
 									autoFocus
 									required
 								/>
+								{loginError && (
+									<FieldErrorText>{loginErrorMessage}</FieldErrorText>
+								)}
 							</Field.Root>
-							<Field.Root>
+							<Field.Root invalid={passwordError}>
 								<Field.Label>Пароль</Field.Label>
 								<Input
 									value={password}
@@ -65,6 +109,9 @@ function SignIn() {
 									autoComplete='password'
 									required
 								/>
+								{passwordError && (
+									<FieldErrorText>{passwordErrorMessage}</FieldErrorText>
+								)}
 							</Field.Root>
 							<Field.Root>
 								<Checkbox.Root>
@@ -76,12 +123,17 @@ function SignIn() {
 						</Stack>
 					</Card.Body>
 					<Card.Footer className='justify-center flex flex-col gap-3'>
-						<Button type='submit' onClick={submit} className='button w-full'>
+						<Button
+							type='submit'
+							onClick={handleSubmit}
+							className='button w-full'
+						>
 							Войти
 						</Button>
-						<Link href='#' className='flex'>
+						<Link type='button' onClick={handleClickOpen} className='flex'>
 							Забыли пароль?
 						</Link>
+						<ForgotPassword open={open} handleClose={handleClose} />
 					</Card.Footer>
 				</Card.Root>
 			</div>
