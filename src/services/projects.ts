@@ -1,15 +1,8 @@
-import axios from 'axios'
-import config from './config'
+import api from './axios'
 
 export const getProjects = async () => {
 	try {
-		const token = ''
-
-		const response = await axios.get(`${config.api.baseUrl}/projects`, {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
+		const response = await api.get(`/projects`)
 
 		return response.data ?? []
 	} catch (e) {

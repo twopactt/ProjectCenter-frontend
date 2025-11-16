@@ -1,5 +1,6 @@
 import Project from '@/components/Project'
 import { ColorModeButton } from '@/components/ui/color-mode'
+import { logout } from '@/services/auth'
 import { getProjects } from '@/services/projects'
 import { Button, Stack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
@@ -33,11 +34,7 @@ function Projects() {
 	return (
 		<div>
 			<Stack className='!flex-row px-8 py-4 right-auto justify-end bg-muted'>
-				<Button
-					type='button'
-					className='button'
-					onClick={() => (window.location.href = '/login')}
-				>
+				<Button type='button' className='button' onClick={logout}>
 					Выйти
 				</Button>
 				<ColorModeButton className='flex' />

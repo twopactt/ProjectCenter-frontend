@@ -1,4 +1,5 @@
 import { ColorModeButton } from '@/components/ui/color-mode'
+import { login } from '@/services/auth'
 import {
 	Button,
 	Card,
@@ -8,8 +9,28 @@ import {
 	Link,
 	Stack,
 } from '@chakra-ui/react'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 function SignIn() {
+	const [loginValue, setLoginValue] = useState('')
+	const [password, setPasswordValue] = useState('')
+	const navigate = useNavigate()
+
+	const submit = async () => {
+		const result = await login({
+			login: loginValue,
+			password: password,
+		})
+
+		if (!result) {
+			alert('Неверный логин или пароль.')
+			return
+		}
+
+		navigate('/projects')
+	}
+
 	return (
 		<div>
 			<ColorModeButton className='fixed top-3 right-3 z-10' />
@@ -23,6 +44,8 @@ function SignIn() {
 							<Field.Root>
 								<Field.Label>Логин</Field.Label>
 								<Input
+									value={loginValue}
+									onChange={e => setLoginValue(e.target.value)}
 									type='login'
 									name='login'
 									placeholder='login'
@@ -34,12 +57,13 @@ function SignIn() {
 							<Field.Root>
 								<Field.Label>Пароль</Field.Label>
 								<Input
+									value={password}
+									onChange={e => setPasswordValue(e.target.value)}
 									type='password'
 									name='password'
-									autoComplete='login'
-									autoFocus
-									required
 									placeholder='••••••••'
+									autoComplete='password'
+									required
 								/>
 							</Field.Root>
 							<Field.Root>
@@ -52,10 +76,10 @@ function SignIn() {
 						</Stack>
 					</Card.Body>
 					<Card.Footer className='justify-center flex flex-col gap-3'>
-						<Button type='submit' className='button w-full'>
+						<Button type='submit' onClick={submit} className='button w-full'>
 							Войти
 						</Button>
-						<Link href='/projects' className='flex'>
+						<Link href='#' className='flex'>
 							Забыли пароль?
 						</Link>
 					</Card.Footer>
