@@ -42,10 +42,10 @@ function Project({
 				<Text>Предмет: {subjectName}</Text>
 				<Text>Статус видимости: {isPublic ? 'публичный' : 'приватный'}</Text>
 				<Text>
-					Дата создания: {moment(createdDate).format('DD.MM.YYYY hh:mm')}
+					Дата создания: {moment(createdDate).format('DD.MM.YYYY')}
 				</Text>
 				<Text>
-					Дата сдачи: {moment(dateDeadline).format('DD.MM.YYYY hh:mm')}
+					Дата сдачи: {moment(dateDeadline).format('DD.MM.YYYY')}
 				</Text>
 			</Card.Body>
 			<Card.Footer>

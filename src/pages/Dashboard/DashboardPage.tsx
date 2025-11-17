@@ -2,7 +2,7 @@ import { ColorModeButton } from '@/components/ui/color-mode'
 import { logout } from '@/services/auth'
 import { Button, Card, Field, Input, Stack } from '@chakra-ui/react'
 
-function Dashboard() {
+function DashboardPage() {
 	return (
 		<div>
 			<Stack className='!flex-row px-8 py-4 right-auto justify-end bg-muted'>
@@ -37,4 +37,4 @@ function Dashboard() {
 	)
 }
 
-export default Dashboard
+export default DashboardPage

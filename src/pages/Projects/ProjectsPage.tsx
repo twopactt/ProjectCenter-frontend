@@ -19,7 +19,7 @@ interface Project {
 	comments?: { userFullName: string; text: string; date: Date }[]
 }
 
-function Projects() {
+function ProjectsPage() {
 	const [projects, setProjects] = useState<Project[]>([])
 
 	useEffect(() => {
@@ -55,4 +55,4 @@ function Projects() {
 	)
 }
 
-export default Projects
+export default ProjectsPage

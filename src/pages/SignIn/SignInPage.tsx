@@ -14,7 +14,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ForgotPassword from './ForgotPassword'
 
-function SignIn() {
+function SignInPage() {
 	const [loginValue, setLoginValue] = useState('')
 	const [loginError, setLoginError] = useState(false)
 	const [loginErrorMessage, setLoginErrorMessage] = useState('')
@@ -141,4 +141,4 @@ function SignIn() {
 	)
 }
 
-export default SignIn
+export default SignInPage
