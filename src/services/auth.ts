@@ -60,5 +60,12 @@ export const getRole = () => localStorage.getItem('role')
 
 export const getProfile = (): ProfileResponse | null => {
 	const data = localStorage.getItem('profile')
-	return data ? JSON.parse(data) : null
+	if (!data) return null
+	const profile = JSON.parse(data) as ProfileResponse
+
+	if (profile.photo) {
+		profile.photo = `${config.api.staticUrl}${profile.photo}`
+	}
+
+	return profile
 }

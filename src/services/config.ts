@@ -1,6 +1,7 @@
 const config = {
 	api: {
-		baseUrl: import.meta.env.VITE_API_BASE_URL,
+		baseUrl: import.meta.env.VITE_API_BASE_URL + '/api',
+		staticUrl: import.meta.env.VITE_API_BASE_URL,
 	},
 }
 
