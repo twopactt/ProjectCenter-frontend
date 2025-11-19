@@ -1,8 +1,7 @@
+import Header from '@/components/Header'
+import Layout from '@/components/Layout'
 import Project from '@/components/Project'
-import { ColorModeButton } from '@/components/ui/color-mode'
-import { logout } from '@/services/auth'
 import { getProjects } from '@/services/projects'
-import { Button, Stack } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 
 interface Project {
@@ -32,17 +31,12 @@ function ProjectsPage() {
 	}, [])
 
 	return (
-		<div>
-			<Stack className='!flex-row px-8 py-4 right-auto justify-end bg-muted'>
-				<Button type='button' className='button' onClick={logout}>
-					Выйти
-				</Button>
-				<ColorModeButton className='flex' />
-			</Stack>
-			<section className='px-8 py-4 flex flex-row justify-start items-start gap-12'>
+		<Layout>
+			<Header />
+			<section className='px-8 py-4 flex flex-col justify-start items-start gap-12'>
 				<div className='flex flex-col gap-3'>
 					<h3 className='font-bold text-xl'>Все проекты</h3>
-					<ul className='flex flex-row gap-5'>
+					<ul className='flex flex-col gap-5'>
 						{projects.map(x => (
 							<li key={x.id}>
 								<Project {...x} />
@@ -51,7 +45,7 @@ function ProjectsPage() {
 					</ul>
 				</div>
 			</section>
-		</div>
+		</Layout>
 	)
 }
 

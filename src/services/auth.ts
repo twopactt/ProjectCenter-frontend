@@ -6,15 +6,23 @@ interface LoginRequest {
 	password: string
 }
 
-interface LoginResponse {
-	token: string
+interface ProfileResponse {
+	id: number
+	surname: string
+	name: string
+	patronymic: string
+	login: string
+	email: string
+	phone: string
 	role: string
-	fullName: string
+	photo: string
+	groupName: string
+	curatorName: string
 }
 
 export const login = async (
 	data: LoginRequest
-): Promise<LoginResponse | null> => {
+): Promise<ProfileResponse | null> => {
 	try {
 		const response = await axios.post(`${config.api.baseUrl}/auth/login`, data)
 
@@ -24,7 +32,13 @@ export const login = async (
 		localStorage.setItem('role', role)
 		localStorage.setItem('fullName', fullName)
 
-		return response.data
+		const profile = await axios.get(`${config.api.baseUrl}/Profile`, {
+			headers: { Authorization: `Bearer ${token}` },
+		})
+
+		localStorage.setItem('profile', JSON.stringify(profile.data))
+
+		return profile.data
 	} catch (e) {
 		console.error(e)
 
@@ -43,3 +57,8 @@ export const logout = () => {
 
 export const getToken = () => localStorage.getItem('token')
 export const getRole = () => localStorage.getItem('role')
+
+export const getProfile = (): ProfileResponse | null => {
+	const data = localStorage.getItem('profile')
+	return data ? JSON.parse(data) : null
+}

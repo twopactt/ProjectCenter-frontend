@@ -1,16 +1,11 @@
-import { ColorModeButton } from '@/components/ui/color-mode'
-import { logout } from '@/services/auth'
+import Header from '@/components/Header'
+import Layout from '@/components/Layout'
 import { Button, Card, Field, Input, Stack } from '@chakra-ui/react'
 
 function DashboardPage() {
 	return (
-		<div>
-			<Stack className='!flex-row px-8 py-4 right-auto justify-end bg-muted'>
-				<Button type='button' className='button' onClick={logout}>
-					Выйти
-				</Button>
-				<ColorModeButton className='flex' />
-			</Stack>
+		<Layout>
+			<Header />
 			<div className='px-8 py-4 flex flex-row justify-start items-start gap-12'>
 				<div className='flex flex-col gap-3'>
 					<Card.Root className='max-w-md w-full self-center'>
@@ -33,7 +28,7 @@ function DashboardPage() {
 					</Card.Root>
 				</div>
 			</div>
-		</div>
+		</Layout>
 	)
 }
 
