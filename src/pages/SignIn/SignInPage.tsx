@@ -13,6 +13,7 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ForgotPassword from './ForgotPassword'
+import { PasswordInput } from '@/components/ui/password-input'
 
 function SignInPage() {
 	const [loginValue, setLoginValue] = useState('')
@@ -87,10 +88,10 @@ function SignInPage() {
 								<Input
 									value={loginValue}
 									onChange={e => setLoginValue(e.target.value)}
-									type='login'
-									name='login'
-									placeholder='login'
-									autoComplete='login'
+									type='text'
+									name='username'
+									placeholder='username'
+									autoComplete='username'
 									autoFocus
 									required
 								/>
@@ -100,7 +101,7 @@ function SignInPage() {
 							</Field.Root>
 							<Field.Root invalid={passwordError}>
 								<Field.Label>Пароль</Field.Label>
-								<Input
+								<PasswordInput
 									value={password}
 									onChange={e => setPasswordValue(e.target.value)}
 									type='password'
