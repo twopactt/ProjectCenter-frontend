@@ -1,11 +1,12 @@
-import { Avatar, Menu, Portal, Stack, Text } from '@chakra-ui/react'
+import { Avatar, Box, Link, Menu, Portal, Stack, Text } from '@chakra-ui/react'
 import { ColorModeButton } from './ui/color-mode'
 import { getProfile, logout } from '@/services/auth'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 
 function Header() {
 	const profile = getProfile()
 	const navigate = useNavigate()
+	const location = useLocation()
 
 	const links = [
 		{
@@ -19,6 +20,15 @@ function Header() {
 		},
 	]
 
+	const navLinks = [
+		{ title: 'Дашборд', path: '/dashboard' },
+		{ title: 'Проекты', path: '/projects' },
+	]
+
+	if (profile?.role === 'Admin') {
+		navLinks.push({ title: 'Админ панель', path: '/admin' })
+	}
+
 	return (
 		<Stack
 			bg='bg'
@@ -26,6 +36,22 @@ function Header() {
 		>
 			<Stack className='!flex-row items-center'>
 				<Text className='font-bold text-2xl'>Центр проектной деятельности</Text>
+				<Box className='ml-12 gap-3 justify-between flex'>
+					{navLinks.map(link => {
+						const isActive = location.pathname === link.path
+						return (
+							<Link
+								key={link.title}
+								onClick={() => navigate(link.path)}
+								color={isActive ? 'white' : 'gray.focusRing'}
+								_hover={{ color: 'white' }}
+								className='cursor-pointer font-bold text-lg'
+							>
+								{link.title}
+							</Link>
+						)
+					})}
+				</Box>
 			</Stack>
 			<Stack className='!flex-row justify-self-end justify-end items-center'>
 				<ColorModeButton className='flex' />
