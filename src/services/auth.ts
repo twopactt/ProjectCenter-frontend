@@ -1,24 +1,6 @@
 import axios from 'axios'
 import config from './config'
-
-interface LoginRequest {
-	login: string
-	password: string
-}
-
-interface ProfileResponse {
-	id: number
-	surname: string
-	name: string
-	patronymic: string
-	login: string
-	email: string
-	phone: string
-	role: string
-	photo: string
-	groupName: string
-	curatorName: string
-}
+import type { LoginRequest, ProfileResponse } from '@/shared/types/auth'
 
 export const login = async (
 	data: LoginRequest
