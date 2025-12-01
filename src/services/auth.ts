@@ -18,21 +18,27 @@ export const login = async (
 			headers: { Authorization: `Bearer ${token}` },
 		})
 
-		localStorage.setItem('profile', JSON.stringify(profile.data))
+		const normalized = {
+			...profile.data,
+			photo: profile.data.photo
+				? `${config.api.staticUrl}${profile.data.photo}`
+				: null,
+		}
 
-		return profile.data
+		localStorage.setItem('profile', JSON.stringify(normalized))
+
+		return normalized
 	} catch (e) {
 		console.error(e)
-
 		return null
 	}
 }
 
 export const logout = () => {
 	localStorage.removeItem('token')
-	sessionStorage.removeItem('token')
 	localStorage.removeItem('role')
 	localStorage.removeItem('fullName')
+	localStorage.removeItem('profile')
 
 	window.location.href = '/login'
 }
@@ -43,11 +49,11 @@ export const getRole = () => localStorage.getItem('role')
 export const getProfile = (): ProfileResponse | null => {
 	const data = localStorage.getItem('profile')
 	if (!data) return null
-	const profile = JSON.parse(data) as ProfileResponse
 
-	if (profile.photo) {
-		profile.photo = `${config.api.staticUrl}${profile.photo}`
+	try {
+		const profile = JSON.parse(data) as ProfileResponse
+		return profile
+	} catch {
+		return null
 	}
-
-	return profile
 }

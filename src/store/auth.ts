@@ -1,25 +1,35 @@
 import { create } from 'zustand'
-
-interface User {
-	id: number
-	surname: string
-	name: string
-	patronymic: string
-	login: string
-	email: string
-	phone: string
-	role: string
-	photo: string | null
-}
+import type { ProfileResponse } from '@/shared/types/auth'
 
 interface AuthState {
-	user: User | null
-	setUser: (user: User) => void
+	user: ProfileResponse | null
+	setUser: (user: ProfileResponse) => void
 	logout: () => void
+	loadFromLocalStorage: () => void
 }
 
 export const useAuth = create<AuthState>(set => ({
 	user: null,
+
 	setUser: user => set({ user }),
-	logout: () => set({ user: null }),
+
+	logout: () => {
+		localStorage.removeItem('token')
+		localStorage.removeItem('role')
+		localStorage.removeItem('fullName')
+		localStorage.removeItem('profile')
+		set({ user: null })
+	},
+
+	loadFromLocalStorage: () => {
+		try {
+			const data = localStorage.getItem('profile')
+			if (!data) return
+
+			const user: ProfileResponse = JSON.parse(data)
+			set({ user })
+		} catch {
+			console.error('Failed to parse stored profile')
+		}
+	},
 }))
