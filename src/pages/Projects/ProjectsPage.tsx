@@ -1,15 +1,18 @@
 import Header from '@/components/Header'
 import Layout from '@/components/Layout'
-import Project from '@/components/Project'
+import ProjectCard from './ProjectCard'
+import ProjectModal from './ProjectModal'
+
 import { getProjects } from '@/services/projects'
-import type { ProjectResponse, ProjectUI } from '@/shared/types/project'
 import { useEffect, useState } from 'react'
+import type { ProjectUI, ProjectResponse } from '@/shared/types/project'
 
 function ProjectsPage() {
 	const [projects, setProjects] = useState<ProjectUI[]>([])
+	const [selectedProject, setSelectedProject] = useState<ProjectUI | null>(null)
 
 	useEffect(() => {
-		const getData = async () => {
+		const load = async () => {
 			const data: ProjectResponse[] = await getProjects()
 
 			const mapped: ProjectUI[] = data.map(p => ({
@@ -26,23 +29,33 @@ function ProjectsPage() {
 			setProjects(mapped)
 		}
 
-		getData()
+		load()
 	}, [])
 
 	return (
 		<Layout>
 			<Header />
-			<section className='px-8 py-4 flex flex-col justify-start items-start gap-12'>
-				<div className='flex flex-col gap-3 w-full'>
-					<h3 className='font-bold text-xl'>Все проекты</h3>
-					<ul className='flex flex-col gap-5'>
-						{projects.map(x => (
-							<li key={x.id}>
-								<Project {...x} />
-							</li>
-						))}
-					</ul>
-				</div>
+			<section className='px-8 py-4 flex flex-col gap-6 w-full'>
+				<h3 className='font-bold text-xl'>Все проекты</h3>
+
+				<ul className='flex flex-col gap-5 w-full'>
+					{projects.map(x => (
+						<li key={x.id}>
+							<ProjectCard
+								title={x.title}
+								studentName={x.studentName}
+								statusName={x.statusName}
+								onClick={() => setSelectedProject(x)}
+							/>
+						</li>
+					))}
+				</ul>
+
+				<ProjectModal
+					project={selectedProject}
+					isOpen={!!selectedProject}
+					onClose={() => setSelectedProject(null)}
+				/>
 			</section>
 		</Layout>
 	)
