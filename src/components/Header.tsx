@@ -43,8 +43,9 @@ function Header() {
 							<Link
 								key={link.title}
 								onClick={() => navigate(link.path)}
-								color={isActive ? 'white' : 'gray.focusRing'}
-								_hover={{ color: 'white' }}
+								color={isActive ? 'black' : 'gray.focusRing'}
+								_dark={{ color: isActive ? 'white' : 'gray.400' }}
+								_hover={{ color: 'black', _dark: { color: 'white' } }}
 								className='cursor-pointer font-bold text-lg'
 							>
 								{link.title}

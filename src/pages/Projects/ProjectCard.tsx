@@ -8,7 +8,7 @@ interface ProjectCardProps {
 	onClick: () => void
 }
 
-export default function ProjectCard({
+function ProjectCard({
 	id,
 	title,
 	studentName,
@@ -18,7 +18,7 @@ export default function ProjectCard({
 	return (
 		<Card.Root
 			className='cursor-pointer transition-all'
-			_hover={{ bg: 'gray.800' }}
+			_hover={{ bg: 'gray.100', _dark: { bg: 'gray.800' } }}
 			onClick={onClick}
 			borderWidth='1px'
 		>
@@ -41,3 +41,5 @@ export default function ProjectCard({
 		</Card.Root>
 	)
 }
+
+export default ProjectCard
