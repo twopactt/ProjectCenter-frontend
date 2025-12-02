@@ -1,15 +1,14 @@
 import Header from '@/components/Header'
 import Layout from '@/components/Layout'
 import ProjectCard from './ProjectCard'
-import ProjectModal from './ProjectModal'
-
 import { getProjects } from '@/services/projects'
 import { useEffect, useState } from 'react'
-import type { ProjectUI, ProjectResponse } from '@/shared/types/project'
+import type { ProjectResponse, ProjectUI } from '@/shared/types/project'
+import { useNavigate } from 'react-router-dom'
 
 function ProjectsPage() {
 	const [projects, setProjects] = useState<ProjectUI[]>([])
-	const [selectedProject, setSelectedProject] = useState<ProjectUI | null>(null)
+	const navigate = useNavigate()
 
 	useEffect(() => {
 		const load = async () => {
@@ -35,27 +34,22 @@ function ProjectsPage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='px-8 py-4 flex flex-col gap-6 w-full'>
-				<h3 className='font-bold text-xl'>Все проекты</h3>
 
-				<ul className='flex flex-col gap-5 w-full'>
-					{projects.map(x => (
-						<li key={x.id}>
-							<ProjectCard
-								title={x.title}
-								studentName={x.studentName}
-								statusName={x.statusName}
-								onClick={() => setSelectedProject(x)}
-							/>
-						</li>
+			<section className='px-8 py-6 flex flex-col gap-6'>
+				<h3 className='font-bold text-2xl'>Все проекты</h3>
+
+				<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full'>
+					{projects.map(p => (
+						<ProjectCard
+							key={p.id}
+							id={p.id}
+							title={p.title}
+							studentName={p.studentName}
+							teacherName={p.teacherName}
+							onClick={() => navigate(`/projects/${p.id}`)}
+						/>
 					))}
-				</ul>
-
-				<ProjectModal
-					project={selectedProject}
-					isOpen={!!selectedProject}
-					onClose={() => setSelectedProject(null)}
-				/>
+				</div>
 			</section>
 		</Layout>
 	)

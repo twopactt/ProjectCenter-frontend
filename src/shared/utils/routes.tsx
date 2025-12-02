@@ -1,4 +1,5 @@
 import ProjectsPage from '@/pages/Projects/ProjectsPage'
+import ProjectPage from '@/pages/Project/ProjectPage'
 import DashboardPage from '@/pages/Dashboard/DashboardPage'
 import ProfilePage from '@/pages/Profile/ProfilePage'
 import AdminPage from '@/pages/Admin/AdminPage'
@@ -21,6 +22,7 @@ export const routes: RoutesGroup[] = [
 			{ path: '/projects', element: <ProjectsPage /> },
 			{ path: '/profile', element: <ProfilePage /> },
 			{ path: '/dashboard', element: <DashboardPage /> },
+			{ path: '/projects/:id', element: <ProjectPage /> },
 		],
 	},
 	{
