@@ -20,3 +20,23 @@ export interface ProjectResponse extends ProjectRequest {
 		date: string
 	}[]
 }
+
+export interface ProjectUI {
+	id: number
+	title: string
+	studentName: string
+	teacherName: string
+	statusName: string
+	typeName: string
+	subjectName: string
+	isPublic: boolean
+	dateDeadline: Date
+	createdDate: Date
+	comments: ProjectComment[]
+}
+
+export interface ProjectComment {
+	userFullName: string
+	text: string
+	date: Date
+}

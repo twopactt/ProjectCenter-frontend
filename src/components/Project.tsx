@@ -1,4 +1,4 @@
-import { Card, Heading, Stack, Text } from '@chakra-ui/react'
+import { Card, DataList, Heading, Stack, Text } from '@chakra-ui/react'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 
@@ -32,21 +32,56 @@ function Project({
 	return (
 		<Card.Root variant='subtle'>
 			<Card.Header>
-				<Heading size='md'>Название проекта: {title}</Heading>
+				<Card.Title>{title}</Card.Title>
 			</Card.Header>
 			<Card.Body>
-				<Text>Студент: {studentName}</Text>
-				<Text>Преподаватель: {teacherName}</Text>
-				<Text>Статус: {statusName}</Text>
-				<Text>Тип: {typeName}</Text>
-				<Text>Предмет: {subjectName}</Text>
-				<Text>Статус видимости: {isPublic ? 'публичный' : 'приватный'}</Text>
-				<Text>
-					Дата создания: {moment(createdDate).format('DD.MM.YYYY')}
-				</Text>
-				<Text>
-					Дата сдачи: {moment(dateDeadline).format('DD.MM.YYYY')}
-				</Text>
+				<DataList.Root orientation='horizontal' gap={3}>
+					<DataList.Item>
+						<DataList.ItemLabel>Студент</DataList.ItemLabel>
+						<DataList.ItemValue>{studentName}</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Преподаватель</DataList.ItemLabel>
+						<DataList.ItemValue>{teacherName}</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Статус</DataList.ItemLabel>
+						<DataList.ItemValue>{statusName}</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Тип</DataList.ItemLabel>
+						<DataList.ItemValue>{typeName}</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Предмет</DataList.ItemLabel>
+						<DataList.ItemValue>{subjectName}</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Видимость</DataList.ItemLabel>
+						<DataList.ItemValue>
+							{isPublic ? 'публичный' : 'приватный'}
+						</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Дата создания</DataList.ItemLabel>
+						<DataList.ItemValue>
+							{moment(createdDate).format('DD.MM.YYYY')}
+						</DataList.ItemValue>
+					</DataList.Item>
+
+					<DataList.Item>
+						<DataList.ItemLabel>Дата сдачи</DataList.ItemLabel>
+						<DataList.ItemValue>
+							{moment(dateDeadline).format('DD.MM.YYYY')}
+						</DataList.ItemValue>
+					</DataList.Item>
+				</DataList.Root>
 			</Card.Body>
 			<Card.Footer>
 				<Stack>
