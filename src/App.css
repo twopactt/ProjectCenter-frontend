@@ -1,7 +1,6 @@
 .button {
 	background-color: var(--color-teal-500);
 	color: white;
-	font-weight: 700;
 }
 
 .button:hover {
