@@ -1,19 +1,25 @@
 export interface ProjectRequest {
 	title: string
+	typeId: number
+	subjectId: number
+	isPublic: boolean
+}
+
+export interface ProjectResponse {
+	id: number
+	title: string
+	typeId: number
+	subjectId: number
+	isPublic: boolean
+
+	typeName: string
+	subjectName: string
 	studentName: string
 	teacherName: string
 	statusName: string
-	typeName: string
-	subjectName: string
-	fileProject?: string | null
-	fileDocumentation?: string | null
-	isPublic: boolean
-	dateDeadline: string
-}
 
-export interface ProjectResponse extends ProjectRequest {
-	id: number
-	createdDate: string
+	deadline: string
+	createdAt: string
 	comments: {
 		userFullName: string
 		text: string
@@ -24,12 +30,16 @@ export interface ProjectResponse extends ProjectRequest {
 export interface ProjectUI {
 	id: number
 	title: string
+	typeId: number
+	subjectId: number
+	isPublic: boolean
+
+	typeName: string
+	subjectName: string
 	studentName: string
 	teacherName: string
 	statusName: string
-	typeName: string
-	subjectName: string
-	isPublic: boolean
+	
 	dateDeadline: Date
 	createdDate: Date
 	comments: ProjectComment[]
