@@ -108,6 +108,7 @@ function CreateProjectModal({
 					</Dialog.Header>
 					<Dialog.Body className='flex flex-col gap-4'>
 						<Field.Root invalid={titleError}>
+							<Text className='font-bold'>Название проекта</Text>
 							<Input
 								placeholder='Название проекта'
 								value={title}
@@ -135,7 +136,7 @@ function CreateProjectModal({
 								<Select.HiddenSelect />
 								<Select.Label>Тип проекта</Select.Label>
 								<Select.Control>
-									<Select.Trigger>
+									<Select.Trigger className='cursor-pointer'>
 										<Select.ValueText placeholder='Выберите тип' />
 									</Select.Trigger>
 									<Select.IndicatorGroup>
@@ -145,7 +146,11 @@ function CreateProjectModal({
 								<Select.Positioner>
 									<Select.Content>
 										{typeCollection.items.map(t => (
-											<Select.Item item={t} key={t.value}>
+											<Select.Item
+												item={t}
+												key={t.value}
+												className='cursor-pointer'
+											>
 												{t.label}
 												<Select.ItemIndicator />
 											</Select.Item>
@@ -168,7 +173,7 @@ function CreateProjectModal({
 								<Select.HiddenSelect />
 								<Select.Label>Предмет</Select.Label>
 								<Select.Control>
-									<Select.Trigger>
+									<Select.Trigger className='cursor-pointer'>
 										<Select.ValueText placeholder='Выберите предмет' />
 									</Select.Trigger>
 									<Select.IndicatorGroup>
@@ -178,7 +183,11 @@ function CreateProjectModal({
 								<Select.Positioner>
 									<Select.Content>
 										{subjectCollection.items.map(s => (
-											<Select.Item item={s} key={s.value}>
+											<Select.Item
+												item={s}
+												key={s.value}
+												className='cursor-pointer'
+											>
 												{s.label}
 												<Select.ItemIndicator />
 											</Select.Item>
