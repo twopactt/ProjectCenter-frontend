@@ -23,6 +23,16 @@ export const getProjectById = async (
 	}
 }
 
+export const getMyProject = async (): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.get<ProjectResponse>(`/projects/my`)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
 export const createProject = async (
 	projectData: ProjectRequest
 ): Promise<ProjectResponse | null> => {

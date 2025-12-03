@@ -1,7 +1,7 @@
 import Header from '@/components/Header'
 import Layout from '@/components/Layout'
 import { getSubjects, getTypes } from '@/services/directory'
-import { createProject, getProjects } from '@/services/projects'
+import { createProject, getMyProject } from '@/services/projects'
 import type { ProjectUI } from '@/shared/types/project'
 import { useEffect, useState } from 'react'
 import { createListCollection, Text } from '@chakra-ui/react'
@@ -26,7 +26,8 @@ function DashboardPage() {
 
 	useEffect(() => {
 		const load = async () => {
-			const [typesData, subjectsData] = await Promise.all([
+			const [myProjectData, typesData, subjectsData] = await Promise.all([
+				getMyProject(),
 				getTypes(),
 				getSubjects(),
 			])
@@ -34,29 +35,24 @@ function DashboardPage() {
 			setTypes(typesData)
 			setSubjects(subjectsData)
 
-			const projects = await getProjects()
-			const currentUserName = localStorage.getItem('fullName')
-
-			const myProject = projects.find(p => p.studentName === currentUserName)
-
-			if (myProject) {
+			if (myProjectData) {
 				setProject({
-					id: myProject.id,
-					title: myProject.title,
-					typeId: myProject.typeId,
-					subjectId: myProject.subjectId,
-					isPublic: myProject.isPublic,
+					id: myProjectData.id,
+					title: myProjectData.title,
+					typeId: myProjectData.typeId,
+					subjectId: myProjectData.subjectId,
+					isPublic: myProjectData.isPublic,
 
-					typeName: myProject.typeName,
-					subjectName: myProject.subjectName,
-					studentName: myProject.studentName,
-					teacherName: myProject.teacherName,
-					statusName: myProject.statusName,
+					typeName: myProjectData.typeName,
+					subjectName: myProjectData.subjectName,
+					studentName: myProjectData.studentName,
+					teacherName: myProjectData.teacherName,
+					statusName: myProjectData.statusName,
 
-					dateDeadline: new Date(myProject.dateDeadline),
-					createdDate: new Date(myProject.createdDate),
+					dateDeadline: new Date(myProjectData.dateDeadline),
+					createdDate: new Date(myProjectData.createdDate),
 
-					comments: myProject.comments.map(c => ({
+					comments: myProjectData.comments.map(c => ({
 						...c,
 						date: new Date(c.date),
 					})),
