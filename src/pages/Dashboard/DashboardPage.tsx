@@ -11,6 +11,8 @@ import CreateProjectModal from './CreateProjectModal'
 import ProjectCard from './ProjectCard'
 import moment from 'moment'
 import 'moment/locale/ru'
+import config from '@/services/config'
+import { getFileSize } from '@/shared/utils/fileSize'
 
 moment.locale('ru')
 
@@ -21,8 +23,9 @@ function DashboardPage() {
 	const [title, setTitle] = useState('')
 	const [typeId, setTypeId] = useState<number | null>(null)
 	const [subjectId, setSubjectId] = useState<number | null>(null)
-
 	const [isModalOpen, setIsModalOpen] = useState(false)
+
+	const role = localStorage.getItem('role')
 
 	useEffect(() => {
 		const load = async () => {
@@ -36,6 +39,15 @@ function DashboardPage() {
 			setSubjects(subjectsData)
 
 			if (myProjectData) {
+				const projectFileSize = myProjectData.fileProject
+					? await getFileSize(config.api.staticUrl + myProjectData.fileProject)
+					: 0
+				const docFileSize = myProjectData.fileDocumentation
+					? await getFileSize(
+							config.api.staticUrl + myProjectData.fileDocumentation
+					  )
+					: 0
+
 				setProject({
 					id: myProjectData.id,
 					title: myProjectData.title,
@@ -56,6 +68,22 @@ function DashboardPage() {
 						...c,
 						date: new Date(c.date),
 					})),
+					projectFile: myProjectData.fileProject
+						? {
+								url: config.api.staticUrl + myProjectData.fileProject,
+								fileName: myProjectData.fileProject.split('/').pop() || 'file',
+								fileSize: projectFileSize,
+						  }
+						: null,
+
+					docFile: myProjectData.fileDocumentation
+						? {
+								url: config.api.staticUrl + myProjectData.fileDocumentation,
+								fileName:
+									myProjectData.fileDocumentation.split('/').pop() || 'file',
+								fileSize: docFileSize,
+						  }
+						: null,
 				})
 			}
 		}
@@ -118,31 +146,38 @@ function DashboardPage() {
 		<Layout>
 			<Header />
 			<section className='px-8 py-6 flex flex-col gap-8'>
-				<h3 className='font-bold text-2xl'>Мой проект</h3>
-
+				<h3 className='font-bold text-2xl text'>
+					{role === 'Student'
+						? 'Мой проект'
+						: role === 'Teacher'
+						? 'Проекты студентов'
+						: 'Управление проектами'}
+				</h3>
 				{project ? (
 					<div className='w-full flex justify-center'>
 						<ProjectCard project={project} />
 					</div>
 				) : (
-					<div className='flex flex-col items-center gap-8'>
+					<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
 						<Text fontSize='2xl' fontWeight='bold'>
-							У вас пока нет проекта
+							{role === 'Student' ? 'У вас пока нет проекта' : 'Скоро'}
 						</Text>
-						<CreateProjectModal
-							isOpen={isModalOpen}
-							onOpen={() => setIsModalOpen(true)}
-							onClose={() => setIsModalOpen(false)}
-							title={title}
-							setTitle={setTitle}
-							typeCollection={typeCollection}
-							subjectCollection={subjectCollection}
-							typeId={typeId}
-							subjectId={subjectId}
-							setTypeId={setTypeId}
-							setSubjectId={setSubjectId}
-							onCreate={handleCreate}
-						/>
+						{role === 'Student' && (
+							<CreateProjectModal
+								isOpen={isModalOpen}
+								onOpen={() => setIsModalOpen(true)}
+								onClose={() => setIsModalOpen(false)}
+								title={title}
+								setTitle={setTitle}
+								typeCollection={typeCollection}
+								subjectCollection={subjectCollection}
+								typeId={typeId}
+								subjectId={subjectId}
+								setTypeId={setTypeId}
+								setSubjectId={setSubjectId}
+								onCreate={handleCreate}
+							/>
+						)}
 					</div>
 				)}
 			</section>

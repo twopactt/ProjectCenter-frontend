@@ -25,6 +25,17 @@ export interface ProjectResponse {
 		text: string
 		date: string
 	}[]
+
+	projectFile?: {
+		url: string
+		fileName: string
+		fileSize: number
+	} | null
+	docFile?: {
+		url: string
+		fileName: string
+		fileSize: number
+	} | null
 }
 
 export interface ProjectUI {
@@ -39,10 +50,21 @@ export interface ProjectUI {
 	studentName: string
 	teacherName: string
 	statusName: string
-	
+
 	dateDeadline: Date
 	createdDate: Date
 	comments: ProjectComment[]
+
+	projectFile?: {
+		url: string
+		fileName: string
+		fileSize: number
+	} | null
+	docFile?: {
+		url: string
+		fileName: string
+		fileSize: number
+	} | null
 }
 
 export interface ProjectComment {

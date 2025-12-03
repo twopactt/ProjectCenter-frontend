@@ -7,11 +7,17 @@ import {
 	CardHeader,
 	CardBody,
 	Button,
+	DownloadTrigger,
+	FormatByte,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
-import { LuPencil, LuTrash2 } from 'react-icons/lu'
+import { LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
+import { useState } from 'react'
+import EditProjectModal from './EditProjectModal'
+import { fetchFile } from '@/services/files'
+import { deleteProject } from '@/services/projects'
 
 moment.locale('ru')
 
@@ -20,6 +26,23 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project }: ProjectCardProps) {
+	const [editOpen, setEditOpen] = useState(false)
+
+	const handleDelete = async () => {
+		if (!project.id) return
+
+		const confirmed = window.confirm('Вы уверены, что хотите удалить проект?')
+		if (!confirmed) return
+
+		const success = await deleteProject(project.id)
+		if (success) {
+			alert('Проект удалён')
+			window.location.reload()
+		} else {
+			alert('Не удалось удалить проект')
+		}
+	}
+
 	return (
 		<Card.Root className='w-full max-w-3xl'>
 			<CardHeader>
@@ -65,15 +88,72 @@ function ProjectCard({ project }: ProjectCardProps) {
 							{moment(project.dateDeadline).format('DD.MM.YYYY')}
 						</DataList.ItemValue>
 					</DataList.Item>
+					{project.projectFile && (
+						<DataList.Item>
+							<DataList.ItemLabel>Файл проекта</DataList.ItemLabel>
+							<DataList.ItemValue>
+								<DownloadTrigger
+									data={() => fetchFile(project.projectFile!.url)}
+									fileName={project.projectFile!.fileName}
+									mimeType='application/octet-stream'
+									asChild
+								>
+									<Button variant='outline' size='sm'>
+										<LuDownload /> {project.projectFile!.fileName} (
+										<FormatByte
+											value={project.projectFile!.fileSize}
+											unitDisplay='narrow'
+										/>
+										)
+									</Button>
+								</DownloadTrigger>
+							</DataList.ItemValue>
+						</DataList.Item>
+					)}
+					{project.docFile && (
+						<DataList.Item>
+							<DataList.ItemLabel>Документация</DataList.ItemLabel>
+							<DataList.ItemValue>
+								<DownloadTrigger
+									data={() => fetchFile(project.docFile!.url)}
+									fileName={project.docFile!.fileName}
+									mimeType='application/octet-stream'
+									asChild
+								>
+									<Button variant='outline' size='sm'>
+										<LuDownload /> {project.docFile!.fileName} (
+										<FormatByte
+											value={project.docFile!.fileSize}
+											unitDisplay='narrow'
+										/>
+										)
+									</Button>
+								</DownloadTrigger>
+							</DataList.ItemValue>
+						</DataList.Item>
+					)}
 				</DataList.Root>
 				<div className='self-end mt-6 gap-2 flex flex-row'>
-					<Button variant='surface' colorPalette='red'>
+					<Button onClick={handleDelete} variant='surface' colorPalette='red'>
 						<LuTrash2 />
 					</Button>
-					<Button variant='surface' colorPalette='blue'>
+					<Button
+						onClick={() => setEditOpen(true)}
+						variant='surface'
+						colorPalette='blue'
+					>
 						<LuPencil />
 					</Button>
 				</div>
+				{editOpen && (
+					<EditProjectModal
+						isOpen={editOpen}
+						onClose={() => setEditOpen(false)}
+						projectId={project.id}
+						isPublic={project.isPublic}
+						onUpdated={() => window.location.reload()}
+					/>
+				)}
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Комментарии

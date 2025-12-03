@@ -76,3 +76,26 @@ export const updateMyProject = async (
 		return null
 	}
 }
+
+export const updateMyProjectFiles = async (
+	id: number,
+	data: FormData
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.put<ProjectResponse>(`/projects/my/${id}`, data)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
+export const deleteProject = async (id: number): Promise<boolean> => {
+	try {
+		await api.delete(`/projects/${id}`)
+		return true
+	} catch (e) {
+		console.error(e)
+		return false
+	}
+}
