@@ -1,6 +1,7 @@
 import axios from 'axios'
 import config from './config'
 import type { LoginRequest, ProfileResponse } from '@/shared/types/auth'
+import { getPhotoUrl } from './utils'
 
 export const login = async (
 	data: LoginRequest
@@ -20,9 +21,7 @@ export const login = async (
 
 		const normalized = {
 			...profile.data,
-			photo: profile.data.photo
-				? `${config.api.staticUrl}${profile.data.photo}`
-				: null,
+			photo: getPhotoUrl(profile.data.photo),
 		}
 
 		localStorage.setItem('profile', JSON.stringify(normalized))
