@@ -25,10 +25,6 @@ function Header() {
 		{ title: 'Проекты', path: '/projects' },
 	]
 
-	if (profile?.role === 'Admin') {
-		navLinks.push({ title: 'Админ панель', path: '/admin' })
-	}
-
 	return (
 		<Stack
 			bg='bg'
