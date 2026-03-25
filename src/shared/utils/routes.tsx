@@ -2,6 +2,7 @@ import ProjectsPage from '@/pages/Projects/ProjectsPage'
 import ProjectPage from '@/pages/Project/ProjectPage'
 import DashboardPage from '@/pages/Dashboard/DashboardPage'
 import ProfilePage from '@/pages/Profile/ProfilePage'
+import AdminPage from '@/pages/Admin/AdminPage'
 import type { JSX } from 'react'
 
 export interface AppRoute {
@@ -23,5 +24,9 @@ export const routes: RoutesGroup[] = [
 			{ path: '/dashboard', element: <DashboardPage /> },
 			{ path: '/projects/:id', element: <ProjectPage /> },
 		],
+	},
+	{
+		roles: ['Admin'],
+		items: [{ path: '/admin', element: <AdminPage /> }],
 	},
 ]
