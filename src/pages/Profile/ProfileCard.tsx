@@ -71,16 +71,28 @@ function ProfileCard({ user }: Props) {
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Роль</DataList.ItemLabel>
-						<DataList.ItemValue>{user.role}</DataList.ItemValue>
+						<DataList.ItemValue>
+							{user.role === 'Student'
+								? 'Студент'
+								: user.role === 'Teacher'
+									? 'Преподаватель'
+									: user.role === 'Admin'
+										? 'Админ'
+										: user.role}
+						</DataList.ItemValue>
 					</DataList.Item>
-					<DataList.Item>
-						<DataList.ItemLabel>Группа</DataList.ItemLabel>
-						<DataList.ItemValue>{user.groupName}</DataList.ItemValue>
-					</DataList.Item>
-					<DataList.Item>
-						<DataList.ItemLabel>Куратор</DataList.ItemLabel>
-						<DataList.ItemValue>{user.curatorName}</DataList.ItemValue>
-					</DataList.Item>
+					{user.role === 'Student' && (
+						<>
+							<DataList.Item>
+								<DataList.ItemLabel>Группа</DataList.ItemLabel>
+								<DataList.ItemValue>{user.groupName}</DataList.ItemValue>
+							</DataList.Item>
+							<DataList.Item>
+								<DataList.ItemLabel>Куратор</DataList.ItemLabel>
+								<DataList.ItemValue>{user.curatorName}</DataList.ItemValue>
+							</DataList.Item>
+						</>
+					)}
 				</DataList.Root>
 			</CardBody>
 			<CardFooter className='justify-end'>
