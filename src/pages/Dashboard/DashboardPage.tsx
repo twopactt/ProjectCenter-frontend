@@ -44,8 +44,8 @@ function DashboardPage() {
 					: 0
 				const docFileSize = myProjectData.fileDocumentation
 					? await getFileSize(
-							config.api.staticUrl + myProjectData.fileDocumentation
-					  )
+							config.api.staticUrl + myProjectData.fileDocumentation,
+						)
 					: 0
 
 				setProject({
@@ -68,12 +68,22 @@ function DashboardPage() {
 						...c,
 						date: new Date(c.date),
 					})),
+					grade: myProjectData.gradeValue
+						? [
+								{
+									teacherFullName: myProjectData.gradedBy,
+									value: myProjectData.gradeValue,
+									comment: myProjectData.gradeComment,
+									createdAt: new Date(myProjectData.gradeDate),
+								},
+							]
+						: [],
 					projectFile: myProjectData.fileProject
 						? {
 								url: config.api.staticUrl + myProjectData.fileProject,
 								fileName: myProjectData.fileProject.split('/').pop() || 'file',
 								fileSize: projectFileSize,
-						  }
+							}
 						: null,
 
 					docFile: myProjectData.fileDocumentation
@@ -82,7 +92,7 @@ function DashboardPage() {
 								fileName:
 									myProjectData.fileDocumentation.split('/').pop() || 'file',
 								fileSize: docFileSize,
-						  }
+							}
 						: null,
 				})
 			}
@@ -94,7 +104,7 @@ function DashboardPage() {
 	const typeCollection = createListCollection<{ value: string; label: string }>(
 		{
 			items: types.map(t => ({ value: t.id.toString(), label: t.name })),
-		}
+		},
 	)
 
 	const subjectCollection = createListCollection<{
@@ -150,8 +160,8 @@ function DashboardPage() {
 					{role === 'Student'
 						? 'Мой проект'
 						: role === 'Teacher'
-						? 'Проекты студентов'
-						: 'Управление проектами'}
+							? 'Проекты студентов'
+							: 'Управление проектами'}
 				</h3>
 				{project ? (
 					<div className='w-full flex justify-center'>

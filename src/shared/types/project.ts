@@ -54,6 +54,7 @@ export interface ProjectUI {
 	dateDeadline: Date
 	createdDate: Date
 	comments: ProjectComment[]
+	grade: ProjectGrade[]
 
 	projectFile?: {
 		url: string
@@ -71,4 +72,11 @@ export interface ProjectComment {
 	userFullName: string
 	text: string
 	date: Date
+}
+
+export interface ProjectGrade {
+	teacherFullName: string
+	value: number
+	comment: string
+	createdAt: Date
 }

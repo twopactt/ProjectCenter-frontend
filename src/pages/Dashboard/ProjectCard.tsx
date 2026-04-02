@@ -9,6 +9,7 @@ import {
 	Button,
 	DownloadTrigger,
 	FormatByte,
+	RatingGroup,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
 import { LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
@@ -154,6 +155,34 @@ function ProjectCard({ project }: ProjectCardProps) {
 						onUpdated={() => window.location.reload()}
 					/>
 				)}
+				<Stack mt={4}>
+					<Heading size='xl' fontWeight='bold'>
+						Оценка
+					</Heading>
+					{project.grade?.length ? (
+						project.grade.map((c, i) => (
+							<Stack key={i} borderWidth='1px' borderRadius='md' p={3}>
+								<Text fontWeight='bold'>{c.teacherFullName}</Text>
+								<Text>{c.comment}</Text>
+								<RatingGroup.Root
+									colorPalette='orange'
+									readOnly
+									count={5}
+									value={c.value}
+									size='sm'
+								>
+									<RatingGroup.HiddenInput />
+									<RatingGroup.Control />
+								</RatingGroup.Root>
+								<Text fontSize='sm' color='gray.500'>
+									{moment(c.createdAt).startOf('hour').fromNow()}
+								</Text>
+							</Stack>
+						))
+					) : (
+						<Text>Оценки нет</Text>
+					)}
+				</Stack>
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Комментарии
