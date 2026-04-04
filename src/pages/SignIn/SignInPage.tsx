@@ -76,7 +76,7 @@ function SignInPage() {
 	return (
 		<div>
 			<ColorModeButton className='fixed top-3 right-3 z-10' />
-			<div className='flex justify-center w-screen h-screen'>
+			<div className='flex justify-center w-screen h-screen p-4'>
 				<Card.Root className='max-w-md w-full self-center'>
 					<Card.Header>
 						<Card.Title className='font-bold text-xl'>Войти</Card.Title>

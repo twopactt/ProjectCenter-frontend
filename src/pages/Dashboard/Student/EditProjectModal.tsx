@@ -72,7 +72,7 @@ function EditProjectModal({
 		<Dialog.Root placement={'center'} open={isOpen}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content className='p-5 flex flex-col gap-4'>
+				<Dialog.Content className='p-5 flex flex-col gap-4 mx-4'>
 					<Dialog.Header>
 						<Dialog.Title>Редактирование проекта</Dialog.Title>
 					</Dialog.Header>

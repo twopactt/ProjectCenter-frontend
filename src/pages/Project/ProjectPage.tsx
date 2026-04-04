@@ -45,17 +45,17 @@ function ProjectPage() {
 		<Layout>
 			<Header />
 
-			<section className='px-8 py-6 flex flex-row items-center w-full'>
+			<section className='px-4 md:px-8 py-6 flex flex-col md:flex-row items-start w-full gap-2 md:gap-4'>
 				<Button
 					variant='outline'
 					onClick={() => navigate(-1)}
-					className='self-start mb-4'
+					className='self-start md:sticky md:top-24 mb-4 md:mb-0 w-auto'
 				>
 					<LuArrowLeft />
 					Назад
 				</Button>
 
-				<div className='flex-1 flex justify-center'>
+				<div className='flex-1 flex justify-center w-full'>
 					<ProjectCard project={project} />
 				</div>
 			</section>

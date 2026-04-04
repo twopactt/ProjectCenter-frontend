@@ -6,7 +6,7 @@ function AdminPage() {
 	return (
 		<Layout>
 			<Header />
-			<div className='px-8 py-4 flex flex-row justify-start items-start gap-12'>
+			<div className='px-4 md:px-8 py-4 flex flex-row justify-start items-start gap-12'>
 				<div className='flex flex-col gap-3'>
 					<Card.Root className='max-w-md w-full self-center'>
 						<Card.Header>

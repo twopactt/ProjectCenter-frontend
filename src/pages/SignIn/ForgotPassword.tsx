@@ -48,7 +48,7 @@ function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
 		>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
-				<Dialog.Content>
+				<Dialog.Content className='mx-4'>
 					<Dialog.Header>
 						<Dialog.Title>Сбросить пароль</Dialog.Title>
 					</Dialog.Header>

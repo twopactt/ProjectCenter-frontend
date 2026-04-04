@@ -35,7 +35,7 @@ function ProjectsPage() {
 		<Layout>
 			<Header />
 
-			<section className='px-8 py-6 flex flex-col gap-6'>
+			<section className='px-4 md:px-8 py-6 flex flex-col gap-6'>
 				<h3 className='font-bold text-2xl'>Все проекты</h3>
 
 				<div className='grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 w-full'>

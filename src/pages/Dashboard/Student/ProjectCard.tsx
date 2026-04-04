@@ -92,20 +92,36 @@ function ProjectCard({ project }: ProjectCardProps) {
 					{project.projectFile && (
 						<DataList.Item>
 							<DataList.ItemLabel>Файл проекта</DataList.ItemLabel>
-							<DataList.ItemValue>
+							<DataList.ItemValue w='100%'>
 								<DownloadTrigger
 									data={() => fetchFile(project.projectFile!.url)}
 									fileName={project.projectFile!.fileName}
 									mimeType='application/octet-stream'
 									asChild
 								>
-									<Button variant='outline' size='sm'>
-										<LuDownload /> {project.projectFile!.fileName} (
-										<FormatByte
-											value={project.projectFile!.fileSize}
-											unitDisplay='narrow'
-										/>
-										)
+									<Button
+										variant='outline'
+										size='sm'
+										w='100%'
+										h='auto'
+										whiteSpace='normal'
+										wordBreak='break-word'
+										textAlign='left'
+										display='inline-flex'
+										alignItems='center'
+										gap={1}
+										px={3}
+										py={2}
+									>
+										<LuDownload style={{ flexShrink: 0 }} />
+										<span style={{ wordBreak: 'break-all' }}>
+											{project.projectFile!.fileName} (
+											<FormatByte
+												value={project.projectFile!.fileSize}
+												unitDisplay='narrow'
+											/>
+											)
+										</span>
 									</Button>
 								</DownloadTrigger>
 							</DataList.ItemValue>
@@ -114,20 +130,36 @@ function ProjectCard({ project }: ProjectCardProps) {
 					{project.docFile && (
 						<DataList.Item>
 							<DataList.ItemLabel>Документация</DataList.ItemLabel>
-							<DataList.ItemValue>
+							<DataList.ItemValue w='100%'>
 								<DownloadTrigger
 									data={() => fetchFile(project.docFile!.url)}
 									fileName={project.docFile!.fileName}
 									mimeType='application/octet-stream'
 									asChild
 								>
-									<Button variant='outline' size='sm'>
-										<LuDownload /> {project.docFile!.fileName} (
-										<FormatByte
-											value={project.docFile!.fileSize}
-											unitDisplay='narrow'
-										/>
-										)
+									<Button
+										variant='outline'
+										size='sm'
+										w='100%'
+										h='auto'
+										whiteSpace='normal'
+										wordBreak='break-word'
+										textAlign='left'
+										display='inline-flex'
+										alignItems='center'
+										gap={1}
+										px={3}
+										py={2}
+									>
+										<LuDownload style={{ flexShrink: 0 }} />
+										<span style={{ wordBreak: 'break-all' }}>
+											{project.docFile!.fileName} (
+											<FormatByte
+												value={project.docFile!.fileSize}
+												unitDisplay='narrow'
+											/>
+											)
+										</span>
 									</Button>
 								</DownloadTrigger>
 							</DataList.ItemValue>
