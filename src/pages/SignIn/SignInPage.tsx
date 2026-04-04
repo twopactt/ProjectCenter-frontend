@@ -70,7 +70,7 @@ function SignInPage() {
 			return
 		}
 
-		navigate('/projects')
+		navigate('/dashboard')
 	}
 
 	return (

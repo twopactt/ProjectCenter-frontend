@@ -1,13 +1,13 @@
 import axios from 'axios'
-import config from './config'
+import api from './axios'
 import type { LoginRequest, ProfileResponse } from '@/shared/types/auth'
 import { getPhotoUrl } from './utils'
 
 export const login = async (
-	data: LoginRequest
+	data: LoginRequest,
 ): Promise<ProfileResponse | null> => {
 	try {
-		const response = await axios.post(`${config.api.baseUrl}/auth/login`, data)
+		const response = await api.post(`/auth/login`, data)
 
 		const { token, role, fullName } = response.data
 
@@ -15,7 +15,7 @@ export const login = async (
 		localStorage.setItem('role', role)
 		localStorage.setItem('fullName', fullName)
 
-		const profile = await axios.get(`${config.api.baseUrl}/Profile`, {
+		const profile = await api.get(`/profile`, {
 			headers: { Authorization: `Bearer ${token}` },
 		})
 
@@ -54,5 +54,23 @@ export const getProfile = (): ProfileResponse | null => {
 		return profile
 	} catch {
 		return null
+	}
+}
+
+export const validateToken = async (): Promise<boolean> => {
+	const token = getToken()
+	if (!token) return false
+
+	try {
+		await api.get(`/profile`)
+		return true
+	} catch (error) {
+		if (axios.isAxiosError(error)) {
+			if (error.response?.status === 401) {
+				logout()
+				return false
+			}
+		}
+		return false
 	}
 }
