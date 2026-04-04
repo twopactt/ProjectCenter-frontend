@@ -1,4 +1,8 @@
-import type { ProjectRequest, ProjectResponse } from '@/shared/types/project'
+import type {
+	ProjectRequest,
+	ProjectResponse,
+	TeacherProjectResponse,
+} from '@/shared/types/project'
 import api from './axios'
 
 export const getProjects = async (): Promise<ProjectResponse[]> => {
@@ -12,7 +16,7 @@ export const getProjects = async (): Promise<ProjectResponse[]> => {
 }
 
 export const getProjectById = async (
-	id: number
+	id: number,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.get<ProjectResponse>(`/projects/${id}`)
@@ -33,8 +37,21 @@ export const getMyProject = async (): Promise<ProjectResponse | null> => {
 	}
 }
 
+export const getMyStudentsProjects = async (): Promise<
+	TeacherProjectResponse[] | null
+> => {
+	try {
+		const response =
+			await api.get<TeacherProjectResponse[]>(`/teacher/students`)
+		return response.data ?? []
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
 export const createProject = async (
-	projectData: ProjectRequest
+	projectData: ProjectRequest,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.post<ProjectResponse>(`/projects`, projectData)
@@ -47,12 +64,12 @@ export const createProject = async (
 
 export const updateProjectById = async (
 	id: number,
-	projectData: ProjectRequest
+	projectData: ProjectRequest,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.put<ProjectResponse>(
 			`/projects/${id}`,
-			projectData
+			projectData,
 		)
 		return response.data
 	} catch (e) {
@@ -63,12 +80,12 @@ export const updateProjectById = async (
 
 export const updateMyProject = async (
 	id: number,
-	projectData: ProjectRequest
+	projectData: ProjectRequest,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.put<ProjectResponse>(
 			`/projects/my/${id}`,
-			projectData
+			projectData,
 		)
 		return response.data
 	} catch (e) {
@@ -79,7 +96,7 @@ export const updateMyProject = async (
 
 export const updateMyProjectFiles = async (
 	id: number,
-	data: FormData
+	data: FormData,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.put<ProjectResponse>(`/projects/my/${id}`, data)

@@ -9,6 +9,7 @@ import type { TypeResponse } from '@/shared/types/typeProject'
 import type { SubjectResponse } from '@/shared/types/subject'
 import CreateProjectModal from './CreateProjectModal'
 import ProjectCard from './ProjectCard'
+import TeacherProjectsList from './TeacherProjectsList'
 import moment from 'moment'
 import 'moment/locale/ru'
 import config from '@/services/config'
@@ -160,19 +161,22 @@ function DashboardPage() {
 					{role === 'Student'
 						? 'Мой проект'
 						: role === 'Teacher'
-							? 'Проекты студентов'
+							? 'Проекты моих студентов'
 							: 'Управление проектами'}
 				</h3>
-				{project ? (
-					<div className='w-full flex justify-center'>
-						<ProjectCard project={project} />
-					</div>
-				) : (
-					<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
-						<Text fontSize='2xl' fontWeight='bold'>
-							{role === 'Student' ? 'У вас пока нет проекта' : 'Скоро'}
-						</Text>
-						{role === 'Student' && (
+
+				{role === 'Teacher' ? (
+					<TeacherProjectsList />
+				) : role === 'Student' ? (
+					project ? (
+						<div className='w-full flex justify-center'>
+							<ProjectCard project={project} />
+						</div>
+					) : (
+						<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
+							<Text fontSize='2xl' fontWeight='bold'>
+								У вас пока нет проекта
+							</Text>
 							<CreateProjectModal
 								isOpen={isModalOpen}
 								onOpen={() => setIsModalOpen(true)}
@@ -187,7 +191,13 @@ function DashboardPage() {
 								setSubjectId={setSubjectId}
 								onCreate={handleCreate}
 							/>
-						)}
+						</div>
+					)
+				) : (
+					<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
+						<Text fontSize='2xl' fontWeight='bold'>
+							Скоро
+						</Text>
 					</div>
 				)}
 			</section>

@@ -80,3 +80,13 @@ export interface ProjectGrade {
 	comment: string
 	createdAt: Date
 }
+
+export interface TeacherProjectResponse {
+	id: number
+	fullName: string
+	groupName: string
+	projectTitle: string
+	projectStatus: string
+	grade: number
+	gradeComment: string
+}
