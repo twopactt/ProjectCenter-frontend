@@ -3,6 +3,7 @@ import ProjectPage from '@/pages/Project/ProjectPage'
 import DashboardPage from '@/pages/Dashboard/DashboardPage'
 import ProfilePage from '@/pages/Profile/ProfilePage'
 import AdminPage from '@/pages/Admin/AdminPage'
+import StudentProjectPage from '@/pages/Dashboard/Teacher/StudentProject/StudentProjectPage'
 import type { JSX } from 'react'
 
 export interface AppRoute {
@@ -23,6 +24,15 @@ export const routes: RoutesGroup[] = [
 			{ path: '/profile', element: <ProfilePage /> },
 			{ path: '/dashboard', element: <DashboardPage /> },
 			{ path: '/projects/:id', element: <ProjectPage /> },
+		],
+	},
+	{
+		roles: ['Teacher'],
+		items: [
+			{
+				path: '/dashboard/student-project/:id',
+				element: <StudentProjectPage />,
+			},
 		],
 	},
 	{

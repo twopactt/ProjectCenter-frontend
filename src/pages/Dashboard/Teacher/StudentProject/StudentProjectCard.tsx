@@ -13,39 +13,19 @@ import {
 	Badge,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
-import { LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
+import { LuDownload } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
-import { useState } from 'react'
-import EditProjectModal from './EditProjectModal'
 import { fetchFile } from '@/services/files'
-import { deleteProject } from '@/services/projects'
 import { getStatusColor } from '@/shared/utils/statusProjectColors'
 
 moment.locale('ru')
 
-interface ProjectCardProps {
+interface StudentProjectCardProps {
 	project: ProjectUI
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
-	const [editOpen, setEditOpen] = useState(false)
-
-	const handleDelete = async () => {
-		if (!project.id) return
-
-		const confirmed = window.confirm('Вы уверены, что хотите удалить проект?')
-		if (!confirmed) return
-
-		const success = await deleteProject(project.id)
-		if (success) {
-			alert('Проект удалён')
-			window.location.reload()
-		} else {
-			alert('Не удалось удалить проект')
-		}
-	}
-
+function StudentProjectCard({ project }: StudentProjectCardProps) {
 	return (
 		<Card.Root className='w-full max-w-3xl'>
 			<CardHeader>
@@ -172,27 +152,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 						</DataList.Item>
 					)}
 				</DataList.Root>
-				<div className='self-end mt-6 gap-2 flex flex-row'>
-					<Button onClick={handleDelete} variant='surface' colorPalette='red'>
-						<LuTrash2 />
-					</Button>
-					<Button
-						onClick={() => setEditOpen(true)}
-						variant='surface'
-						colorPalette='blue'
-					>
-						<LuPencil />
-					</Button>
-				</div>
-				{editOpen && (
-					<EditProjectModal
-						isOpen={editOpen}
-						onClose={() => setEditOpen(false)}
-						projectId={project.id}
-						isPublic={project.isPublic}
-						onUpdated={() => window.location.reload()}
-					/>
-				)}
+
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Оценка
@@ -221,6 +181,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 						<Text>Оценки нет</Text>
 					)}
 				</Stack>
+
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Комментарии
@@ -244,4 +205,4 @@ function ProjectCard({ project }: ProjectCardProps) {
 	)
 }
 
-export default ProjectCard
+export default StudentProjectCard

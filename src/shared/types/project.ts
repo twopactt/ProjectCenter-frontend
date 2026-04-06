@@ -85,6 +85,7 @@ export interface TeacherProjectResponse {
 	id: number
 	fullName: string
 	groupName: string
+	projectId: number
 	projectTitle: string
 	projectStatus: string
 	grade: number

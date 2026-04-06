@@ -5,9 +5,7 @@ import TeacherProjectCard from './TeacherProjectCard'
 import type { TeacherProjectResponse } from '@/shared/types/project'
 
 function TeacherProjectsList() {
-	const [projects, setProjects] = useState<TeacherProjectResponse[]>(
-		[],
-	)
+	const [projects, setProjects] = useState<TeacherProjectResponse[]>([])
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -25,13 +23,14 @@ function TeacherProjectsList() {
 				<TeacherProjectCard
 					key={p.id}
 					id={p.id}
+					projectId={p.projectId}
 					projectTitle={p.projectTitle}
 					fullName={p.fullName}
 					groupName={p.groupName}
 					projectStatus={p.projectStatus}
 					grade={p.grade}
 					gradeComment={p.gradeComment}
-					onClick={() => navigate(`/projects/${p.id}`)}
+					onClick={() => navigate(`/dashboard/student-project/${p.projectId}`)}
 				/>
 			))}
 

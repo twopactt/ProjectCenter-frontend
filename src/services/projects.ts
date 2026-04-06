@@ -50,6 +50,20 @@ export const getMyStudentsProjects = async (): Promise<
 	}
 }
 
+export const getStudentProjectById = async (
+	id: number,
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.get<ProjectResponse>(
+			`/teacher/students/projects/${id}`,
+		)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
 export const createProject = async (
 	projectData: ProjectRequest,
 ): Promise<ProjectResponse | null> => {

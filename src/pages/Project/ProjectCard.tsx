@@ -6,8 +6,10 @@ import {
 	Card,
 	CardHeader,
 	CardBody,
+	Badge,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
+import { getStatusColor } from '@/shared/utils/statusProjectColors'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 
@@ -36,7 +38,11 @@ function ProjectCard({ project }: ProjectCardProps) {
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Статус</DataList.ItemLabel>
-						<DataList.ItemValue>{project.statusName}</DataList.ItemValue>
+						<DataList.ItemValue>
+							<Badge colorPalette={getStatusColor(project.statusName)}>
+								{project.statusName}
+							</Badge>
+						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Тип</DataList.ItemLabel>
