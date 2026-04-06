@@ -6,12 +6,11 @@ import { useAuth } from '@/store/auth'
 import { useEffect, useState } from 'react'
 import ProfileCard from './ProfileCard'
 import { getPhotoUrl } from '@/services/utils'
+import EditProfileModal from './EditProfileModal'
 
 function ProfilePage() {
 	const { user, setUser } = useAuth()
-	const [email, setEmail] = useState('')
-	const [phone, setPhone] = useState('')
-	const [photoFile, setPhotoFile] = useState<File | null>(null)
+	const [editOpen, setEditOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
 
 	useEffect(() => {
@@ -30,8 +29,6 @@ function ProfilePage() {
 				}
 
 				setUser(normalized)
-				setEmail(normalized.email)
-				setPhone(normalized.phone)
 				localStorage.setItem('profile', JSON.stringify(normalized))
 			} catch (e) {
 				console.error('Ошибка загрузки профиля', e)
@@ -41,7 +38,11 @@ function ProfilePage() {
 		if (!user) loadProfile()
 	}, [user, setUser])
 
-	const handleSave = async () => {
+	const handleSave = async (
+		email: string,
+		phone: string,
+		photoFile: File | null,
+	) => {
 		if (!user) return
 		setLoading(true)
 
@@ -52,18 +53,25 @@ function ProfilePage() {
 
 		try {
 			const token = getToken()
-			const response = await api.put(`/Profile`, formData, {
+			const response = await api.put('/Profile', formData, {
 				headers: { Authorization: `Bearer ${token}` },
 			})
 
 			const normalized = {
-				...response.data,
-				photo: getPhotoUrl(response.data.photo),
+				...user,
+				email,
+				phone,
+				photo: response.data?.photo
+					? getPhotoUrl(response.data.photo)
+					: photoFile
+						? URL.createObjectURL(photoFile)
+						: user.photo,
 			}
 
 			setUser(normalized)
 			localStorage.setItem('profile', JSON.stringify(normalized))
 			alert('Профиль обновлён')
+			setEditOpen(false)
 		} catch {
 			alert('Ошибка при обновлении профиля')
 		} finally {
@@ -84,16 +92,18 @@ function ProfilePage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='flex items-center justify-center justify-self-center min-h-[85vh] px-8'>
-				<ProfileCard
-					user={user}
-					email={email}
-					phone={phone}
-					loading={loading}
-					onEmailChange={setEmail}
-					onPhoneChange={setPhone}
-					onPhotoChange={setPhotoFile}
+			<section className='flex items-center justify-center justify-self-center min-h-[85vh] px-4 md:px-8'>
+				<ProfileCard user={user} onEditClick={() => setEditOpen(true)} />
+				<EditProfileModal
+					isOpen={editOpen}
+					onClose={() => setEditOpen(false)}
+					email={user.email}
+					phone={user.phone}
+					photoUrl={user.photo}
+					name={user.name}
+					surname={user.surname}
 					onSave={handleSave}
+					loading={loading}
 				/>
 			</section>
 		</Layout>

@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	DataList,
 } from '@chakra-ui/react'
+import { LuPencil } from 'react-icons/lu'
 
 export interface UserProfile {
 	id: number
@@ -25,18 +26,12 @@ export interface UserProfile {
 
 interface Props {
 	user: UserProfile
-	email: string
-	phone: string
-	loading: boolean
-	onEmailChange: (v: string) => void
-	onPhoneChange: (v: string) => void
-	onPhotoChange: (file: File | null) => void
-	onSave: () => void
+	onEditClick: () => void
 }
 
-function ProfileCard({ user }: Props) {
+function ProfileCard({ user, onEditClick }: Props) {
 	return (
-		<Card.Root className='w-full max-w-sm'>
+		<Card.Root className='w-full max-w-sm mt-4 md:mt-0'>
 			<CardHeader className='flex items-center justify-center justify-self-center'>
 				<Avatar.Root size='2xl'>
 					<Avatar.Fallback name={`${user.name} ${user.surname}`} />
@@ -95,9 +90,12 @@ function ProfileCard({ user }: Props) {
 					)}
 				</DataList.Root>
 			</CardBody>
-			<CardFooter className='justify-end'>
+			<CardFooter className='flex justify-between'>
 				<Button colorPalette='red' variant='surface' onClick={logout}>
 					Выйти
+				</Button>
+				<Button variant='surface' colorPalette='blue' onClick={onEditClick}>
+					<LuPencil />
 				</Button>
 			</CardFooter>
 		</Card.Root>
