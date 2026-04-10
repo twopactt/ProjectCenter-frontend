@@ -16,7 +16,7 @@ import type { ProjectUI } from '@/shared/types/project'
 import { LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import EditProjectModal from './EditProjectModal'
 import { fetchFile } from '@/services/files'
 import { deleteProject } from '@/services/projects'
@@ -30,6 +30,45 @@ interface ProjectCardProps {
 
 function ProjectCard({ project }: ProjectCardProps) {
 	const [editOpen, setEditOpen] = useState(false)
+	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
+		null,
+	)
+	const [existingDocFile, setExistingDocFile] = useState<File | null>(null)
+
+	useEffect(() => {
+		if (editOpen) {
+			const loadFiles = async () => {
+				if (project.projectFile?.url && project.projectFile?.fileName) {
+					const file = await urlToFile(
+						project.projectFile.url,
+						project.projectFile.fileName,
+					)
+					setExistingProjectFile(file)
+				}
+				if (project.docFile?.url && project.docFile?.fileName) {
+					const file = await urlToFile(
+						project.docFile.url,
+						project.docFile.fileName,
+					)
+					setExistingDocFile(file)
+				}
+			}
+			loadFiles()
+		}
+	}, [editOpen])
+
+	const urlToFile = async (
+		url: string,
+		fileName: string,
+	): Promise<File | null> => {
+		try {
+			const response = await fetch(url)
+			const blob = await response.blob()
+			return new File([blob], fileName, { type: blob.type })
+		} catch {
+			return null
+		}
+	}
 
 	const handleDelete = async () => {
 		if (!project.id) return
@@ -190,6 +229,8 @@ function ProjectCard({ project }: ProjectCardProps) {
 						onClose={() => setEditOpen(false)}
 						projectId={project.id}
 						isPublic={project.isPublic}
+						existingProjectFile={existingProjectFile}
+						existingDocFile={existingDocFile}
 						onUpdated={() => window.location.reload()}
 					/>
 				)}

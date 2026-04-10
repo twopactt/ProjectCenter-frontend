@@ -8,7 +8,7 @@ import {
 	Text,
 	useFileUploadContext,
 } from '@chakra-ui/react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { LuFile, LuUpload, LuX } from 'react-icons/lu'
 
 interface Props {
@@ -16,6 +16,8 @@ interface Props {
 	onClose: () => void
 	projectId: number
 	isPublic: boolean
+	existingProjectFile?: File | null
+	existingDocFile?: File | null
 	onUpdated: () => void
 }
 
@@ -46,20 +48,43 @@ function EditProjectModal({
 	onClose,
 	projectId,
 	isPublic,
+	existingProjectFile,
+	existingDocFile,
 	onUpdated,
 }: Props) {
 	const [publicVal, setPublicVal] = useState(isPublic)
-	const [projectFile, setProjectFile] = useState<File | null>(null)
-	const [docFile, setDocFile] = useState<File | null>(null)
+	const [projectFiles, setProjectFiles] = useState<File[]>([])
+	const [docFiles, setDocFiles] = useState<File[]>([])
+	const [removeProjectFile, setRemoveProjectFile] = useState(false)
+	const [removeDocFile, setRemoveDocFile] = useState(false)
+
+	useEffect(() => {
+		if (isOpen) {
+			setPublicVal(isPublic)
+			setProjectFiles(existingProjectFile ? [existingProjectFile] : [])
+			setDocFiles(existingDocFile ? [existingDocFile] : [])
+			setRemoveProjectFile(false)
+			setRemoveDocFile(false)
+		}
+	}, [isOpen, isPublic, existingProjectFile, existingDocFile])
 
 	const handleSave = async () => {
 		const form = new FormData()
 		form.append('IsPublic', publicVal.toString())
-		form.append('RemoveProjectFile', (!projectFile).toString())
-		form.append('RemoveDocumentationFile', (!docFile).toString())
 
-		if (projectFile) form.append('NewProjectFile', projectFile)
-		if (docFile) form.append('NewDocumentationFile', docFile)
+		if (removeProjectFile) {
+			form.append('RemoveProjectFile', 'true')
+		}
+		if (removeDocFile) {
+			form.append('RemoveDocumentationFile', 'true')
+		}
+
+		if (projectFiles.length > 0 && projectFiles[0] !== existingProjectFile) {
+			form.append('NewProjectFile', projectFiles[0])
+		}
+		if (docFiles.length > 0 && docFiles[0] !== existingDocFile) {
+			form.append('NewDocumentationFile', docFiles[0])
+		}
 
 		const updated = await updateMyProjectFiles(projectId, form)
 		if (updated) {
@@ -67,6 +92,9 @@ function EditProjectModal({
 			onClose()
 		}
 	}
+
+	const hasProjectFile = projectFiles.length > 0
+	const hasDocFile = docFiles.length > 0
 
 	return (
 		<Dialog.Root placement={'center'} open={isOpen}>
@@ -94,14 +122,30 @@ function EditProjectModal({
 						</Text>
 						<FileUpload.Root
 							accept={['.zip', '.rar', '.7z']}
-							onFileAccept={({ files }) => setProjectFile(files[0] ?? null)}
+							onFileAccept={({ files }) => {
+								setProjectFiles(files)
+								setRemoveProjectFile(false)
+							}}
+							onFileChange={({ acceptedFiles }) => {
+								if (
+									acceptedFiles.length === 0 &&
+									hasProjectFile &&
+									!removeProjectFile
+								) {
+									setRemoveProjectFile(true)
+									setProjectFiles([])
+								}
+							}}
+							acceptedFiles={projectFiles}
 						>
 							<FileUpload.HiddenInput />
-							<FileUpload.Trigger asChild>
-								<Button variant='outline'>
-									<LuUpload /> Загрузить проект
-								</Button>
-							</FileUpload.Trigger>
+							{!hasProjectFile || removeProjectFile ? (
+								<FileUpload.Trigger asChild>
+									<Button variant='outline'>
+										<LuUpload /> Загрузить проект
+									</Button>
+								</FileUpload.Trigger>
+							) : null}
 							<FileList />
 						</FileUpload.Root>
 						<Text className='font-semibold mt-3'>
@@ -109,14 +153,30 @@ function EditProjectModal({
 						</Text>
 						<FileUpload.Root
 							accept={['.pdf', '.doc', '.docx', '.txt']}
-							onFileAccept={({ files }) => setDocFile(files[0] ?? null)}
+							onFileAccept={({ files }) => {
+								setDocFiles(files)
+								setRemoveDocFile(false)
+							}}
+							onFileChange={({ acceptedFiles }) => {
+								if (
+									acceptedFiles.length === 0 &&
+									hasDocFile &&
+									!removeDocFile
+								) {
+									setRemoveDocFile(true)
+									setDocFiles([])
+								}
+							}}
+							acceptedFiles={docFiles}
 						>
 							<FileUpload.HiddenInput />
-							<FileUpload.Trigger asChild>
-								<Button variant='outline'>
-									<LuUpload /> Загрузить документацию
-								</Button>
-							</FileUpload.Trigger>
+							{!hasDocFile || removeDocFile ? (
+								<FileUpload.Trigger asChild>
+									<Button variant='outline'>
+										<LuUpload /> Загрузить документацию
+									</Button>
+								</FileUpload.Trigger>
+							) : null}
 							<FileList />
 						</FileUpload.Root>
 					</Dialog.Body>
