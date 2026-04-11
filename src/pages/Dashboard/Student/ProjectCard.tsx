@@ -223,17 +223,15 @@ function ProjectCard({ project }: ProjectCardProps) {
 						<LuPencil />
 					</Button>
 				</div>
-				{editOpen && (
-					<EditProjectModal
-						isOpen={editOpen}
-						onClose={() => setEditOpen(false)}
-						projectId={project.id}
-						isPublic={project.isPublic}
-						existingProjectFile={existingProjectFile}
-						existingDocFile={existingDocFile}
-						onUpdated={() => window.location.reload()}
-					/>
-				)}
+				<EditProjectModal
+					isOpen={editOpen}
+					onClose={() => setEditOpen(false)}
+					projectId={project.id}
+					isPublic={project.isPublic}
+					existingProjectFile={existingProjectFile}
+					existingDocFile={existingDocFile}
+					onUpdated={() => window.location.reload()}
+				/>
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Оценка
