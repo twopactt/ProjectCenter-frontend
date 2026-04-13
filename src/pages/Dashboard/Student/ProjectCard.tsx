@@ -10,7 +10,6 @@ import {
 	DownloadTrigger,
 	FormatByte,
 	RatingGroup,
-	Badge,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
 import { LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
@@ -20,7 +19,8 @@ import { useEffect, useState } from 'react'
 import EditProjectModal from './EditProjectModal'
 import { fetchFile } from '@/services/files'
 import { deleteProject } from '@/services/projects'
-import { getStatusColor } from '@/shared/utils/statusProjectColors'
+import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
+import { VisibilityProjectBadge } from '@/shared/utils/visibilityProjectBadge'
 import { showSuccess, showError } from '@/shared/utils/toast'
 
 moment.locale('ru')
@@ -161,9 +161,7 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Статус</DataList.ItemLabel>
 						<DataList.ItemValue>
-							<Badge colorPalette={getStatusColor(project.statusName)}>
-								{project.statusName}
-							</Badge>
+							<StatusProjectBadge status={project.statusName} />
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
@@ -177,7 +175,7 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Видимость</DataList.ItemLabel>
 						<DataList.ItemValue>
-							{localProject.isPublic ? 'публичный' : 'приватный'}
+							<VisibilityProjectBadge isPublic={localProject.isPublic} />
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>

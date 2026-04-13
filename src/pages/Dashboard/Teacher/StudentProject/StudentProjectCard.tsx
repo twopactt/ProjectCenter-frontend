@@ -10,14 +10,14 @@ import {
 	DownloadTrigger,
 	FormatByte,
 	RatingGroup,
-	Badge,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
 import { LuDownload, LuPencil } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 import { fetchFile } from '@/services/files'
-import { getStatusColor } from '@/shared/utils/statusProjectColors'
+import { VisibilityProjectBadge } from '@/shared/utils/visibilityProjectBadge'
+import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
 import { useEffect, useState } from 'react'
 import type { TypeResponse } from '@/shared/types/typeProject'
 import type { SubjectResponse } from '@/shared/types/subject'
@@ -113,9 +113,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Статус</DataList.ItemLabel>
 						<DataList.ItemValue>
-							<Badge colorPalette={getStatusColor(project.statusName)}>
-								{project.statusName}
-							</Badge>
+							<StatusProjectBadge status={project.statusName} />
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
@@ -129,7 +127,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Видимость</DataList.ItemLabel>
 						<DataList.ItemValue>
-							{project.isPublic ? 'публичный' : 'приватный'}
+							<VisibilityProjectBadge isPublic={project.isPublic} />
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>

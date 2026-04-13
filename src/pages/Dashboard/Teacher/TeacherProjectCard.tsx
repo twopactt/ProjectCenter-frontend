@@ -1,5 +1,5 @@
-import { Card, CardHeader, CardBody, DataList, Badge } from '@chakra-ui/react'
-import { getStatusColor } from '@/shared/utils/statusProjectColors'
+import { Card, CardHeader, CardBody, DataList } from '@chakra-ui/react'
+import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
 
 interface TeacherProjectCardProps {
 	id: number
@@ -48,9 +48,7 @@ function TeacherProjectCard({
 					<DataList.Item>
 						<DataList.ItemLabel>Статус</DataList.ItemLabel>
 						<DataList.ItemValue>
-							<Badge colorPalette={getStatusColor(projectStatus)}>
-								{projectStatus}
-							</Badge>
+							<StatusProjectBadge status={projectStatus} />
 						</DataList.ItemValue>
 					</DataList.Item>
 				</DataList.Root>
