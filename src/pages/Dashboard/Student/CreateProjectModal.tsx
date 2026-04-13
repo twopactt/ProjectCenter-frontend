@@ -9,6 +9,7 @@ import {
 	Text,
 	type ListCollection,
 } from '@chakra-ui/react'
+import { showSuccess, showError } from '@/shared/utils/toast'
 import { useState } from 'react'
 
 type Item = { value: string; label: string }
@@ -40,22 +41,19 @@ function CreateProjectModal({
 	onCreate,
 }: Props) {
 	const [error, setError] = useState('')
-	const [titleValue, setTitleValue] = useState('')
 	const [titleError, setTitleError] = useState(false)
 	const [titleErrorMessage, setTitleErrorMessage] = useState('')
 
-	const [typeValue, setTypeValue] = useState<number | null>(null)
 	const [typeError, setTypeError] = useState(false)
 	const [typeErrorMessage, setTypeErrorMessage] = useState('')
 
-	const [subjectValue, setSubjectValue] = useState<number | null>(null)
 	const [subjectError, setSubjectError] = useState(false)
 	const [subjectErrorMessage, setSubjectErrorMessage] = useState('')
 
 	const validateInputs = () => {
 		let valid = true
 
-		if (!titleValue.trim()) {
+		if (!title.trim()) {
 			setTitleError(true)
 			setTitleErrorMessage('Введите название проекта')
 			valid = false
@@ -64,7 +62,7 @@ function CreateProjectModal({
 			setTitleErrorMessage('')
 		}
 
-		if (!typeValue) {
+		if (!typeId) {
 			setTypeError(true)
 			setTypeErrorMessage('Выберите тип проекта')
 			valid = false
@@ -73,7 +71,7 @@ function CreateProjectModal({
 			setTypeErrorMessage('')
 		}
 
-		if (!subjectValue) {
+		if (!subjectId) {
 			setSubjectError(true)
 			setSubjectErrorMessage('Выберите предмет проекта')
 			valid = false
@@ -86,12 +84,16 @@ function CreateProjectModal({
 	}
 
 	const handleCreate = () => {
-		if (!validateInputs()) return
+		if (!validateInputs()) {
+			showError('Заполните все поля')
+			return
+		}
 		if (!title.trim()) return setError('Введите название проекта')
 		if (!typeId) return setError('Выберите тип проекта')
 		if (!subjectId) return setError('Выберите предмет')
 
 		setError('')
+		showSuccess('Проект создан')
 		onCreate()
 	}
 
@@ -115,7 +117,6 @@ function CreateProjectModal({
 								onChange={e => {
 									setTitle(e.target.value)
 									setError('')
-									setTitleValue(e.target.value)
 									if (titleError) setTitleError(false)
 								}}
 							/>
@@ -129,7 +130,6 @@ function CreateProjectModal({
 								onValueChange={v => {
 									setTypeId(Number(v.value))
 									setError('')
-									setTypeValue(Number(v.value))
 									if (typeError) setTypeError(false)
 								}}
 							>
@@ -166,7 +166,6 @@ function CreateProjectModal({
 								onValueChange={v => {
 									setSubjectId(Number(v.value))
 									setError('')
-									setSubjectValue(Number(v.value))
 									if (subjectError) setSubjectError(false)
 								}}
 							>

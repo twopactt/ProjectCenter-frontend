@@ -12,6 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { LuUpload, LuX, LuFile } from 'react-icons/lu'
+import { showError } from '@/shared/utils/toast'
 
 interface EditProfileModalProps {
 	isOpen: boolean
@@ -113,7 +114,10 @@ function EditProfileModal({
 	}
 
 	const handleSave = () => {
-		if (!validateInputs()) return
+		if (!validateInputs()) {
+			showError('Проверьте корректность данных')
+			return
+		}
 		onSave(email, phone, photoFile, removeExistingPhoto)
 	}
 

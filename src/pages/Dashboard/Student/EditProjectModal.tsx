@@ -18,12 +18,19 @@ interface Props {
 	isPublic: boolean
 	existingProjectFile?: File | null
 	existingDocFile?: File | null
-	onUpdated: () => void
+	onUpdated: (data: {
+		isPublic: boolean
+		projectFile?: File[]
+		docFile?: File[]
+		removeProjectFile: boolean
+		removeDocFile: boolean
+	}) => void
 }
 
 const FileList = () => {
 	const ctx = useFileUploadContext()
 	const files = ctx.acceptedFiles
+
 	if (!files.length) return null
 
 	return (
@@ -78,7 +85,6 @@ function EditProjectModal({
 		if (removeDocFile) {
 			form.append('RemoveDocumentationFile', 'true')
 		}
-
 		if (projectFiles.length > 0 && projectFiles[0] !== existingProjectFile) {
 			form.append('NewProjectFile', projectFiles[0])
 		}
@@ -87,9 +93,15 @@ function EditProjectModal({
 		}
 
 		const updated = await updateMyProjectFiles(projectId, form)
+
 		if (updated) {
-			onUpdated()
-			onClose()
+			onUpdated({
+				isPublic: publicVal,
+				projectFile: projectFiles,
+				docFile: docFiles,
+				removeProjectFile,
+				removeDocFile,
+			})
 		}
 	}
 
@@ -97,7 +109,7 @@ function EditProjectModal({
 	const hasDocFile = docFiles.length > 0
 
 	return (
-		<Dialog.Root placement={'center'} open={isOpen}>
+		<Dialog.Root placement='center' open={isOpen}>
 			<Dialog.Backdrop />
 			<Dialog.Positioner>
 				<Dialog.Content className='p-5 flex flex-col gap-4 mx-4'>

@@ -1,6 +1,7 @@
 import './App.css'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { ColorModeProvider } from '@/components/ui/color-mode'
+import { Toaster } from '@/components/ui/toaster'
 import SignInPage from './pages/SignIn/SignInPage'
 import ProtectedRoute from './shared/utils/ProtectedRoute'
 import { routes, type RoutesGroup } from '@/shared/utils/routes'
@@ -9,6 +10,7 @@ import NotFoundRedirect from './shared/utils/NotFoundRedirect'
 function App() {
 	return (
 		<ColorModeProvider>
+			<Toaster />
 			<BrowserRouter>
 				<Routes>
 					<Route path='/' element={<Navigate to={'/login'} />} />
@@ -24,7 +26,7 @@ function App() {
 									</ProtectedRoute>
 								}
 							/>
-						))
+						)),
 					)}
 					<Route path='*' element={<NotFoundRedirect />} />
 				</Routes>

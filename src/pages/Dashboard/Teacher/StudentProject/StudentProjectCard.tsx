@@ -13,11 +13,16 @@ import {
 	Badge,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
-import { LuDownload } from 'react-icons/lu'
+import { LuDownload, LuPencil } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 import { fetchFile } from '@/services/files'
 import { getStatusColor } from '@/shared/utils/statusProjectColors'
+import { useEffect, useState } from 'react'
+import type { TypeResponse } from '@/shared/types/typeProject'
+import type { SubjectResponse } from '@/shared/types/subject'
+import { getSubjects, getTypes } from '@/services/directory'
+import EditStudentProjectModal from './EditStudentProjectModal'
 
 moment.locale('ru')
 
@@ -26,10 +31,74 @@ interface StudentProjectCardProps {
 }
 
 function StudentProjectCard({ project }: StudentProjectCardProps) {
+	const [projectState, setProjectState] = useState(project)
+	const [editOpen, setEditOpen] = useState(false)
+	const [types, setTypes] = useState<TypeResponse[]>([])
+	const [subjects, setSubjects] = useState<SubjectResponse[]>([])
+	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
+		null,
+	)
+	const [existingDocFile, setExistingDocFile] = useState<File | null>(null)
+	const resolvedTypeId = types.find(t => t.name === projectState.typeName)?.id
+	const resolvedSubjectId = subjects.find(
+		s => s.name === projectState.subjectName,
+	)?.id
+
+	useEffect(() => {
+		const loadData = async () => {
+			const [typesData, subjectsData] = await Promise.all([
+				getTypes(),
+				getSubjects(),
+			])
+			setTypes(typesData)
+			setSubjects(subjectsData)
+		}
+		loadData()
+	}, [])
+
+	useEffect(() => {
+		if (editOpen) {
+			const loadFiles = async () => {
+				if (project.projectFile?.url && project.projectFile?.fileName) {
+					const file = await urlToFile(
+						project.projectFile.url,
+						project.projectFile.fileName,
+					)
+					setExistingProjectFile(file)
+				}
+				if (project.docFile?.url && project.docFile?.fileName) {
+					const file = await urlToFile(
+						project.docFile.url,
+						project.docFile.fileName,
+					)
+					setExistingDocFile(file)
+				}
+			}
+			loadFiles()
+		}
+	}, [editOpen])
+
+	const urlToFile = async (
+		url: string,
+		fileName: string,
+	): Promise<File | null> => {
+		try {
+			const response = await fetch(url)
+			const blob = await response.blob()
+			return new File([blob], fileName, { type: blob.type })
+		} catch {
+			return null
+		}
+	}
+
+	const handleUpdated = (updatedProject: ProjectUI) => {
+		setProjectState(updatedProject)
+	}
+
 	return (
 		<Card.Root className='w-full max-w-3xl'>
 			<CardHeader>
-				<Heading size='2xl'>{project.title}</Heading>
+				<Heading size='2xl'>{projectState.title}</Heading>
 			</CardHeader>
 			<CardBody>
 				<DataList.Root orientation='horizontal' gap={4} className='flex-wrap'>
@@ -51,11 +120,11 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Тип</DataList.ItemLabel>
-						<DataList.ItemValue>{project.typeName}</DataList.ItemValue>
+						<DataList.ItemValue>{projectState.typeName}</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Предмет</DataList.ItemLabel>
-						<DataList.ItemValue>{project.subjectName}</DataList.ItemValue>
+						<DataList.ItemValue>{projectState.subjectName}</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Видимость</DataList.ItemLabel>
@@ -72,7 +141,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Дата сдачи</DataList.ItemLabel>
 						<DataList.ItemValue>
-							{moment(project.dateDeadline).format('DD.MM.YYYY')}
+							{moment(projectState.dateDeadline).format('DD.MM.YYYY')}
 						</DataList.ItemValue>
 					</DataList.Item>
 					{project.projectFile && (
@@ -152,7 +221,31 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 						</DataList.Item>
 					)}
 				</DataList.Root>
-
+				<div className='self-end mt-6 gap-2 flex flex-row'>
+					<Button
+						onClick={() => setEditOpen(true)}
+						variant='surface'
+						colorPalette='blue'
+					>
+						<LuPencil />
+					</Button>
+				</div>
+				<EditStudentProjectModal
+					key={project.id}
+					isOpen={editOpen}
+					onClose={() => setEditOpen(false)}
+					projectId={project.id}
+					initialData={{
+						title: projectState.title,
+						typeId: resolvedTypeId ?? 0,
+						subjectId: resolvedSubjectId ?? 0,
+						createdDate: moment(project.createdDate).format('YYYY-MM-DD'),
+						dateDeadline: moment(project.dateDeadline).format('YYYY-MM-DD'),
+					}}
+					types={types}
+					subjects={subjects}
+					onUpdated={handleUpdated}
+				/>
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>
 						Оценка

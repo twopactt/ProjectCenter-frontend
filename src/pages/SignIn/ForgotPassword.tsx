@@ -7,6 +7,7 @@ import {
 	Input,
 	Text,
 } from '@chakra-ui/react'
+import { showError, showSuccess } from '@/shared/utils/toast'
 import { useState } from 'react'
 
 interface ForgotPasswordProps {
@@ -34,7 +35,12 @@ function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
 	}
 
 	const handleSubmit = () => {
-		if (!validateInputs()) return
+		if (!validateInputs()) {
+			showError('Введите корректный email')
+			return
+		}
+
+		showSuccess('Ссылка для сброса отправлена')
 		handleClose()
 	}
 

@@ -14,6 +14,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ForgotPassword from './ForgotPassword'
 import { PasswordInput } from '@/components/ui/password-input'
+import { showError } from '@/shared/utils/toast'
 
 function SignInPage() {
 	const [loginValue, setLoginValue] = useState('')
@@ -66,7 +67,7 @@ function SignInPage() {
 		})
 
 		if (!result) {
-			alert('Неверный логин или пароль.')
+			showError('Неверный логин или пароль.')
 			return
 		}
 

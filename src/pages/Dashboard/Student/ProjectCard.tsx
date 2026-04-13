@@ -21,19 +21,27 @@ import EditProjectModal from './EditProjectModal'
 import { fetchFile } from '@/services/files'
 import { deleteProject } from '@/services/projects'
 import { getStatusColor } from '@/shared/utils/statusProjectColors'
+import { showSuccess, showError } from '@/shared/utils/toast'
 
 moment.locale('ru')
 
 interface ProjectCardProps {
 	project: ProjectUI
+	onUpdated: (updatedProject: ProjectUI) => void
+	onDeleted: () => void
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
+function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
+	const [localProject, setLocalProject] = useState(project)
 	const [editOpen, setEditOpen] = useState(false)
 	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
 		null,
 	)
 	const [existingDocFile, setExistingDocFile] = useState<File | null>(null)
+
+	useEffect(() => {
+		setLocalProject(project)
+	}, [project])
 
 	useEffect(() => {
 		if (editOpen) {
@@ -70,6 +78,55 @@ function ProjectCard({ project }: ProjectCardProps) {
 		}
 	}
 
+	const handleUpdate = (updatedData: {
+		isPublic: boolean
+		projectFile?: File[]
+		docFile?: File[]
+		removeProjectFile: boolean
+		removeDocFile: boolean
+	}) => {
+		const updatedProject = {
+			...localProject,
+			isPublic: updatedData.isPublic,
+
+			projectFile: updatedData.removeProjectFile
+				? null
+				: updatedData.projectFile?.length
+					? {
+							url: URL.createObjectURL(updatedData.projectFile[0]),
+							fileName: updatedData.projectFile[0].name,
+							fileSize: updatedData.projectFile[0].size,
+						}
+					: localProject.projectFile,
+
+			docFile: updatedData.removeDocFile
+				? null
+				: updatedData.docFile?.length
+					? {
+							url: URL.createObjectURL(updatedData.docFile[0]),
+							fileName: updatedData.docFile[0].name,
+							fileSize: updatedData.docFile[0].size,
+						}
+					: localProject.docFile,
+		}
+
+		setLocalProject(updatedProject)
+
+		setExistingProjectFile(
+			updatedData.removeProjectFile
+				? null
+				: (updatedData.projectFile?.[0] ?? existingProjectFile),
+		)
+
+		setExistingDocFile(
+			updatedData.removeDocFile
+				? null
+				: (updatedData.docFile?.[0] ?? existingDocFile),
+		)
+
+		onUpdated(updatedProject)
+	}
+
 	const handleDelete = async () => {
 		if (!project.id) return
 
@@ -77,11 +134,12 @@ function ProjectCard({ project }: ProjectCardProps) {
 		if (!confirmed) return
 
 		const success = await deleteProject(project.id)
+
 		if (success) {
-			alert('Проект удалён')
-			window.location.reload()
+			showSuccess('Проект удалён')
+			onDeleted()
 		} else {
-			alert('Не удалось удалить проект')
+			showError('Не удалось удалить проект')
 		}
 	}
 
@@ -119,7 +177,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Видимость</DataList.ItemLabel>
 						<DataList.ItemValue>
-							{project.isPublic ? 'публичный' : 'приватный'}
+							{localProject.isPublic ? 'публичный' : 'приватный'}
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
@@ -134,13 +192,13 @@ function ProjectCard({ project }: ProjectCardProps) {
 							{moment(project.dateDeadline).format('DD.MM.YYYY')}
 						</DataList.ItemValue>
 					</DataList.Item>
-					{project.projectFile && (
+					{localProject.projectFile && (
 						<DataList.Item>
 							<DataList.ItemLabel>Файл проекта</DataList.ItemLabel>
 							<DataList.ItemValue w='100%'>
 								<DownloadTrigger
-									data={() => fetchFile(project.projectFile!.url)}
-									fileName={project.projectFile!.fileName}
+									data={() => fetchFile(localProject.projectFile!.url)}
+									fileName={localProject.projectFile!.fileName}
 									mimeType='application/octet-stream'
 									asChild
 								>
@@ -160,9 +218,9 @@ function ProjectCard({ project }: ProjectCardProps) {
 									>
 										<LuDownload style={{ flexShrink: 0 }} />
 										<span style={{ wordBreak: 'break-all' }}>
-											{project.projectFile!.fileName} (
+											{localProject.projectFile!.fileName} (
 											<FormatByte
-												value={project.projectFile!.fileSize}
+												value={localProject.projectFile!.fileSize}
 												unitDisplay='narrow'
 											/>
 											)
@@ -172,13 +230,13 @@ function ProjectCard({ project }: ProjectCardProps) {
 							</DataList.ItemValue>
 						</DataList.Item>
 					)}
-					{project.docFile && (
+					{localProject.docFile && (
 						<DataList.Item>
 							<DataList.ItemLabel>Документация</DataList.ItemLabel>
 							<DataList.ItemValue w='100%'>
 								<DownloadTrigger
-									data={() => fetchFile(project.docFile!.url)}
-									fileName={project.docFile!.fileName}
+									data={() => fetchFile(localProject.docFile!.url)}
+									fileName={localProject.docFile!.fileName}
 									mimeType='application/octet-stream'
 									asChild
 								>
@@ -198,9 +256,9 @@ function ProjectCard({ project }: ProjectCardProps) {
 									>
 										<LuDownload style={{ flexShrink: 0 }} />
 										<span style={{ wordBreak: 'break-all' }}>
-											{project.docFile!.fileName} (
+											{localProject.docFile!.fileName} (
 											<FormatByte
-												value={project.docFile!.fileSize}
+												value={localProject.docFile!.fileSize}
 												unitDisplay='narrow'
 											/>
 											)
@@ -230,7 +288,11 @@ function ProjectCard({ project }: ProjectCardProps) {
 					isPublic={project.isPublic}
 					existingProjectFile={existingProjectFile}
 					existingDocFile={existingDocFile}
-					onUpdated={() => window.location.reload()}
+					onUpdated={updatedData => {
+						showSuccess('Проект обновлён')
+						handleUpdate(updatedData)
+						setEditOpen(false)
+					}}
 				/>
 				<Stack mt={4}>
 					<Heading size='xl' fontWeight='bold'>

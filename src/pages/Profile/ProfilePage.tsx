@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import ProfileCard from './ProfileCard'
 import { getPhotoUrl } from '@/services/utils'
 import EditProfileModal from './EditProfileModal'
+import { showSuccess, showError } from '@/shared/utils/toast'
 
 function ProfilePage() {
 	const { user, setUser } = useAuth()
@@ -70,10 +71,10 @@ function ProfilePage() {
 
 			setUser(normalized)
 			localStorage.setItem('profile', JSON.stringify(normalized))
-			alert('Профиль обновлён')
+			showSuccess('Профиль обновлён')
 			setEditOpen(false)
 		} catch {
-			alert('Ошибка при обновлении профиля')
+			showError('Ошибка при обновлении профиля')
 		} finally {
 			setLoading(false)
 		}

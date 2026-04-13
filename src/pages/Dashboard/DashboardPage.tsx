@@ -28,6 +28,12 @@ function DashboardPage() {
 
 	const role = localStorage.getItem('role')
 
+	const resetProjectForm = () => {
+		setTitle('')
+		setTypeId(null)
+		setSubjectId(null)
+	}
+
 	useEffect(() => {
 		const load = async () => {
 			const [myProjectData, typesData, subjectsData] = await Promise.all([
@@ -115,6 +121,68 @@ function DashboardPage() {
 		items: subjects.map(s => ({ value: s.id.toString(), label: s.name })),
 	})
 
+	const refreshProject = async () => {
+		const myProjectData = await getMyProject()
+		if (myProjectData) {
+			const projectFileSize = myProjectData.fileProject
+				? await getFileSize(config.api.staticUrl + myProjectData.fileProject)
+				: 0
+			const docFileSize = myProjectData.fileDocumentation
+				? await getFileSize(
+						config.api.staticUrl + myProjectData.fileDocumentation,
+					)
+				: 0
+
+			setProject({
+				id: myProjectData.id,
+				title: myProjectData.title,
+				typeId: myProjectData.typeId,
+				subjectId: myProjectData.subjectId,
+				isPublic: myProjectData.isPublic,
+				typeName: myProjectData.typeName,
+				subjectName: myProjectData.subjectName,
+				studentName: myProjectData.studentName,
+				teacherName: myProjectData.teacherName,
+				statusName: myProjectData.statusName,
+				dateDeadline: new Date(myProjectData.dateDeadline),
+				createdDate: new Date(myProjectData.createdDate),
+				comments: myProjectData.comments.map(c => ({
+					...c,
+					date: new Date(c.date),
+				})),
+				grade: myProjectData.gradeValue
+					? [
+							{
+								teacherFullName: myProjectData.gradedBy,
+								value: myProjectData.gradeValue,
+								comment: myProjectData.gradeComment,
+								createdAt: new Date(myProjectData.gradeDate),
+							},
+						]
+					: [],
+				projectFile: myProjectData.fileProject
+					? {
+							url: config.api.staticUrl + myProjectData.fileProject,
+							fileName: myProjectData.fileProject.split('/').pop() || 'file',
+							fileSize: projectFileSize,
+						}
+					: null,
+				docFile: myProjectData.fileDocumentation
+					? {
+							url: config.api.staticUrl + myProjectData.fileDocumentation,
+							fileName:
+								myProjectData.fileDocumentation.split('/').pop() || 'file',
+							fileSize: docFileSize,
+						}
+					: null,
+			})
+		}
+	}
+
+	const handleProjectUpdate = (updatedProject: ProjectUI) => {
+		setProject(updatedProject)
+	}
+
 	const handleCreate = async () => {
 		if (!title || !typeId || !subjectId) return
 
@@ -151,6 +219,7 @@ function DashboardPage() {
 		})
 
 		setIsModalOpen(false)
+		resetProjectForm()
 	}
 
 	return (
@@ -170,7 +239,14 @@ function DashboardPage() {
 				) : role === 'Student' ? (
 					project ? (
 						<div className='w-full flex justify-center'>
-							<ProjectCard project={project} />
+							<ProjectCard
+								project={project}
+								onDeleted={() => {
+									setProject(null)
+									resetProjectForm()
+								}}
+								onUpdated={handleProjectUpdate}
+							/>
 						</div>
 					) : (
 						<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
