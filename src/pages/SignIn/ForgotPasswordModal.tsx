@@ -10,14 +10,14 @@ import {
 import { showError, showSuccess } from '@/shared/utils/toast'
 import { useState } from 'react'
 
-interface ForgotPasswordProps {
+interface ForgotPasswordModalProps {
 	open: boolean
 	handleClose: () => void
 }
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
+function ForgotPasswordModal({ open, handleClose }: ForgotPasswordModalProps) {
 	const [emailValue, setEmailValue] = useState('')
 	const [emailError, setEmailError] = useState(false)
 	const [emailErrorMessage, setEmailErrorMessage] = useState('')
@@ -98,4 +98,4 @@ function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
 	)
 }
 
-export default ForgotPassword
+export default ForgotPasswordModal

@@ -22,6 +22,7 @@ import { deleteProject } from '@/services/projects'
 import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
 import { VisibilityProjectBadge } from '@/shared/utils/visibilityProjectBadge'
 import { showSuccess, showError } from '@/shared/utils/toast'
+import { ConfirmModal } from '@/components/ConfirmModal'
 
 moment.locale('ru')
 
@@ -34,6 +35,7 @@ interface ProjectCardProps {
 function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 	const [localProject, setLocalProject] = useState(project)
 	const [editOpen, setEditOpen] = useState(false)
+	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
 	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
 		null,
 	)
@@ -129,9 +131,6 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 
 	const handleDelete = async () => {
 		if (!project.id) return
-
-		const confirmed = window.confirm('Вы уверены, что хотите удалить проект?')
-		if (!confirmed) return
 
 		const success = await deleteProject(project.id)
 
@@ -268,7 +267,11 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 					)}
 				</DataList.Root>
 				<div className='self-end mt-6 gap-2 flex flex-row'>
-					<Button onClick={handleDelete} variant='surface' colorPalette='red'>
+					<Button
+						onClick={() => setDeleteModalOpen(true)}
+						variant='surface'
+						colorPalette='red'
+					>
 						<LuTrash2 />
 					</Button>
 					<Button
@@ -339,6 +342,15 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 					)}
 				</Stack>
 			</CardBody>
+			<ConfirmModal
+				isOpen={deleteModalOpen}
+				onClose={() => setDeleteModalOpen(false)}
+				onConfirm={handleDelete}
+				title='Удаление проекта'
+				message='Вы уверены, что хотите удалить проект? Это действие нельзя отменить.'
+				confirmText='Удалить'
+				confirmColor='red'
+			/>
 		</Card.Root>
 	)
 }

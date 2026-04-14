@@ -104,7 +104,7 @@ function CreateProjectModal({
 				<Button className='button'>Создать проект</Button>
 			</Dialog.Trigger>
 			<Dialog.Positioner>
-				<Dialog.Content className='p-4 mx-4'>
+				<Dialog.Content className='p-0 md:p-5 gap-0 md:gap-4 mx-4'>
 					<Dialog.Header>
 						<Dialog.Title>Создание проекта</Dialog.Title>
 					</Dialog.Header>

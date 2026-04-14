@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import ForgotPassword from './ForgotPassword'
+import ForgotPasswordModal from './ForgotPasswordModal'
 import { PasswordInput } from '@/components/ui/password-input'
 import { showError } from '@/shared/utils/toast'
 
@@ -135,7 +135,7 @@ function SignInPage() {
 						<Link type='button' onClick={handleClickOpen} className='flex'>
 							Забыли пароль?
 						</Link>
-						<ForgotPassword open={open} handleClose={handleClose} />
+						<ForgotPasswordModal open={open} handleClose={handleClose} />
 					</Card.Footer>
 				</Card.Root>
 			</div>

@@ -198,7 +198,7 @@ function EditStudentProjectModal({
 			<Portal>
 				<Dialog.Backdrop />
 				<Dialog.Positioner>
-					<Dialog.Content className='p-5 flex flex-col gap-4 mx-4' maxW='md'>
+					<Dialog.Content className='p-0 md:p-5 gap-0 md:gap-4 mx-4'>
 						<Dialog.Header>
 							<Dialog.Title>Редактирование проекта</Dialog.Title>
 						</Dialog.Header>
