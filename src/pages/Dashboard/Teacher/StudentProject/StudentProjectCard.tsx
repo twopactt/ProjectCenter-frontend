@@ -12,7 +12,7 @@ import {
 	RatingGroup,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
-import { LuDownload, LuPencil } from 'react-icons/lu'
+import { LuDownload, LuPencil, LuMessageSquarePlus } from 'react-icons/lu'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 import { fetchFile } from '@/services/files'
@@ -23,6 +23,10 @@ import type { TypeResponse } from '@/shared/types/typeProject'
 import type { SubjectResponse } from '@/shared/types/subject'
 import { getSubjects, getTypes } from '@/services/directory'
 import EditStudentProjectModal from './EditStudentProjectModal'
+import { getStudentProjectById } from '@/services/projects'
+import { createComment } from '@/services/comments'
+import { CreateCommentModal } from './CreateCommentModal'
+import { showSuccess, showError } from '@/shared/utils/toast'
 
 moment.locale('ru')
 
@@ -33,6 +37,7 @@ interface StudentProjectCardProps {
 function StudentProjectCard({ project }: StudentProjectCardProps) {
 	const [projectState, setProjectState] = useState(project)
 	const [editOpen, setEditOpen] = useState(false)
+	const [commentModalOpen, setCommentModalOpen] = useState(false)
 	const [types, setTypes] = useState<TypeResponse[]>([])
 	const [subjects, setSubjects] = useState<SubjectResponse[]>([])
 	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
@@ -93,6 +98,29 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 
 	const handleUpdated = (updatedProject: ProjectUI) => {
 		setProjectState(updatedProject)
+	}
+
+	const handleCreateComment = async (text: string) => {
+		const success = await createComment(project.id, text)
+		if (success) {
+			showSuccess('Комментарий добавлен')
+			const updatedProject = await getStudentProjectById(project.id)
+			if (updatedProject) {
+				const updatedUI: ProjectUI = {
+					...projectState,
+					comments:
+						updatedProject.comments?.map(c => ({
+							userFullName: c.userFullName,
+							text: c.text,
+							date: new Date(c.date),
+						})) ?? [],
+				}
+				setProjectState(updatedUI)
+			}
+		} else {
+			showError('Не удалось добавить комментарий')
+			throw new Error('Failed to add comment')
+		}
 	}
 
 	return (
@@ -274,12 +302,21 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 				</Stack>
 
 				<Stack mt={4}>
-					<Heading size='xl' fontWeight='bold'>
-						Комментарии
-					</Heading>
-					{project.comments?.length ? (
-						project.comments.map((c, i) => (
-							<Stack key={i} borderWidth='1px' borderRadius='md' p={3}>
+					<div className='flex justify-between items-center'>
+						<Heading size='xl' fontWeight='bold'>
+							Комментарии
+						</Heading>
+						<Button
+							onClick={() => setCommentModalOpen(true)}
+							variant='ghost'
+							colorPalette='blue'
+						>
+							<LuMessageSquarePlus />
+						</Button>
+					</div>
+					{projectState.comments?.length ? (
+						projectState.comments.map((c, i) => (
+							<Stack key={i} borderWidth='1px' borderRadius='md' p={3} mt={2}>
 								<Text fontWeight='bold'>{c.userFullName}</Text>
 								<Text>{c.text}</Text>
 								<Text fontSize='sm' color='gray.500'>
@@ -291,6 +328,12 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 						<Text>Комментариев нет</Text>
 					)}
 				</Stack>
+				<CreateCommentModal
+					isOpen={commentModalOpen}
+					onClose={() => setCommentModalOpen(false)}
+					onSubmit={handleCreateComment}
+					projectId={project.id}
+				/>
 			</CardBody>
 		</Card.Root>
 	)
