@@ -1,5 +1,5 @@
 import { Card, CardHeader, CardBody, DataList } from '@chakra-ui/react'
-import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
+import { StatusProjectBadge } from '@/components/statusProjectBadge'
 
 interface TeacherProjectCardProps {
 	id: number

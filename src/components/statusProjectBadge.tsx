@@ -1,5 +1,5 @@
 import { Badge } from "@chakra-ui/react"
-import { getStatusColor } from "./statusProjectColors"
+import { getStatusColor } from "../shared/utils/statusProjectColors"
 
 interface StatusProjectBadgeProps {
 	status: string

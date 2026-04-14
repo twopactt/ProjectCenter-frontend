@@ -8,8 +8,8 @@ import {
 	CardBody,
 } from '@chakra-ui/react'
 import type { ProjectUI } from '@/shared/types/project'
-import { VisibilityProjectBadge } from '@/shared/utils/visibilityProjectBadge'
-import { StatusProjectBadge } from '@/shared/utils/statusProjectBadge'
+import { VisibilityProjectBadge } from '@/components/visibilityProjectBadge'
+import { StatusProjectBadge } from '@/components/statusProjectBadge'
 import moment from 'moment/moment'
 import 'moment/locale/ru'
 
