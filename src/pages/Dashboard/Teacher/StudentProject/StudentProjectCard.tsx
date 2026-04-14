@@ -25,7 +25,9 @@ import { getSubjects, getTypes } from '@/services/directory'
 import EditStudentProjectModal from './EditStudentProjectModal'
 import { getStudentProjectById } from '@/services/projects'
 import { createComment } from '@/services/comments'
+import { createGrade, updateGrade } from '@/services/grades'
 import { CreateCommentModal } from './CreateCommentModal'
+import { GradeModal } from './GradeModal'
 import { showSuccess, showError } from '@/shared/utils/toast'
 
 moment.locale('ru')
@@ -37,6 +39,8 @@ interface StudentProjectCardProps {
 function StudentProjectCard({ project }: StudentProjectCardProps) {
 	const [projectState, setProjectState] = useState(project)
 	const [editOpen, setEditOpen] = useState(false)
+	const [gradeModalOpen, setGradeModalOpen] = useState(false)
+	const [isEditingGrade, setIsEditingGrade] = useState(false)
 	const [commentModalOpen, setCommentModalOpen] = useState(false)
 	const [types, setTypes] = useState<TypeResponse[]>([])
 	const [subjects, setSubjects] = useState<SubjectResponse[]>([])
@@ -121,6 +125,67 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 			showError('Не удалось добавить комментарий')
 			throw new Error('Failed to add comment')
 		}
+	}
+
+	const handleCreateGrade = async (value: number, comment: string) => {
+		const success = await createGrade(project.id, value, comment)
+		if (success) {
+			const updatedProject = await getStudentProjectById(project.id)
+			if (updatedProject) {
+				const updatedUI: ProjectUI = {
+					...projectState,
+					grade: updatedProject.gradeValue
+						? [
+								{
+									teacherFullName: updatedProject.gradedBy || '',
+									value: updatedProject.gradeValue,
+									comment: updatedProject.gradeComment || '',
+									createdAt: new Date(updatedProject.gradeDate || Date.now()),
+								},
+							]
+						: [],
+				}
+				setProjectState(updatedUI)
+			}
+		} else {
+			showError('Не удалось добавить оценку')
+			throw new Error('Failed to add grade')
+		}
+	}
+
+	const handleUpdateGrade = async (value: number, comment: string) => {
+		const success = await updateGrade(project.id, value, comment)
+		if (success) {
+			const updatedProject = await getStudentProjectById(project.id)
+			if (updatedProject) {
+				const updatedUI: ProjectUI = {
+					...projectState,
+					grade: updatedProject.gradeValue
+						? [
+								{
+									teacherFullName: updatedProject.gradedBy || '',
+									value: updatedProject.gradeValue,
+									comment: updatedProject.gradeComment || '',
+									createdAt: new Date(updatedProject.gradeDate || Date.now()),
+								},
+							]
+						: [],
+				}
+				setProjectState(updatedUI)
+			}
+		} else {
+			showError('Не удалось обновить оценку')
+			throw new Error('Failed to update grade')
+		}
+	}
+
+	const handleOpenGradeModal = () => {
+		if (projectState.grade && projectState.grade.length > 0) {
+			setIsEditingGrade(true)
+		} else {
+			setIsEditingGrade(false)
+		}
+		setGradeModalOpen(true)
 	}
 
 	return (
@@ -273,13 +338,35 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					onUpdated={handleUpdated}
 				/>
 				<Stack mt={4}>
-					<Heading size='xl' fontWeight='bold'>
-						Оценка
-					</Heading>
-					{project.grade?.length ? (
-						project.grade.map((c, i) => (
+					<div className='flex justify-between items-center'>
+						<Heading size='xl' fontWeight='bold'>
+							Оценка
+						</Heading>
+						{!projectState.grade?.length && (
+							<Button
+								onClick={handleOpenGradeModal}
+								variant='ghost'
+								colorPalette='blue'
+								size='sm'
+							>
+								<LuMessageSquarePlus />
+							</Button>
+						)}
+					</div>
+					{projectState.grade?.length ? (
+						projectState.grade.map((c, i) => (
 							<Stack key={i} borderWidth='1px' borderRadius='md' p={3}>
-								<Text fontWeight='bold'>{c.teacherFullName}</Text>
+								<div className='flex justify-between items-center'>
+									<Text fontWeight='bold'>{c.teacherFullName}</Text>
+									<Button
+										onClick={handleOpenGradeModal}
+										variant='ghost'
+										colorPalette='blue'
+										size='sm'
+									>
+										<LuPencil />
+									</Button>
+								</div>
 								<Text>{c.comment}</Text>
 								<RatingGroup.Root
 									colorPalette='orange'
@@ -310,6 +397,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 							onClick={() => setCommentModalOpen(true)}
 							variant='ghost'
 							colorPalette='blue'
+							size='sm'
 						>
 							<LuMessageSquarePlus />
 						</Button>
@@ -333,6 +421,14 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					onClose={() => setCommentModalOpen(false)}
 					onSubmit={handleCreateComment}
 					projectId={project.id}
+				/>
+				<GradeModal
+					isOpen={gradeModalOpen}
+					onClose={() => setGradeModalOpen(false)}
+					onSubmit={isEditingGrade ? handleUpdateGrade : handleCreateGrade}
+					initialValue={projectState.grade?.[0]?.value || 0}
+					initialComment={projectState.grade?.[0]?.comment || ''}
+					isEditing={isEditingGrade}
 				/>
 			</CardBody>
 		</Card.Root>
