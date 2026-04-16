@@ -101,7 +101,15 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 	}
 
 	const handleUpdated = (updatedProject: ProjectUI) => {
-		setProjectState(updatedProject)
+		setProjectState({
+			...updatedProject,
+			grade: updatedProject.grade?.length
+				? updatedProject.grade
+				: projectState.grade,
+			comments: updatedProject.comments?.length
+				? updatedProject.comments
+				: projectState.comments,
+		})
 	}
 
 	const handleCreateComment = async (text: string) => {
@@ -331,7 +339,9 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 						typeId: resolvedTypeId ?? 0,
 						subjectId: resolvedSubjectId ?? 0,
 						createdDate: moment(project.createdDate).format('YYYY-MM-DD'),
-						dateDeadline: moment(project.dateDeadline).format('YYYY-MM-DD'),
+						dateDeadline: moment(projectState.dateDeadline).format(
+							'YYYY-MM-DD',
+						),
 					}}
 					types={types}
 					subjects={subjects}
@@ -379,7 +389,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 									<RatingGroup.Control />
 								</RatingGroup.Root>
 								<Text fontSize='sm' color='gray.500'>
-									{moment(c.createdAt).startOf('hour').fromNow()}
+									{moment(c.createdAt).startOf('minute').fromNow()}
 								</Text>
 							</Stack>
 						))
@@ -408,7 +418,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 								<Text fontWeight='bold'>{c.userFullName}</Text>
 								<Text>{c.text}</Text>
 								<Text fontSize='sm' color='gray.500'>
-									{moment(c.date).startOf('hour').fromNow()}
+									{moment(c.date).startOf('minute').fromNow()}
 								</Text>
 							</Stack>
 						))

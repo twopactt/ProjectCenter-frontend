@@ -315,7 +315,7 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 									<RatingGroup.Control />
 								</RatingGroup.Root>
 								<Text fontSize='sm' color='gray.500'>
-									{moment(c.createdAt).startOf('hour').fromNow()}
+									{moment(c.createdAt).startOf('minute').fromNow()}
 								</Text>
 							</Stack>
 						))
@@ -333,7 +333,7 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 								<Text fontWeight='bold'>{c.userFullName}</Text>
 								<Text>{c.text}</Text>
 								<Text fontSize='sm' color='gray.500'>
-									{moment(c.date).startOf('hour').fromNow()}
+									{moment(c.date).startOf('minute').fromNow()}
 								</Text>
 							</Stack>
 						))

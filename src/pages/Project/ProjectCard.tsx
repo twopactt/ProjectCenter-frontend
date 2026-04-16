@@ -80,7 +80,7 @@ function ProjectCard({ project }: ProjectCardProps) {
 								<Text fontWeight='bold'>{c.userFullName}</Text>
 								<Text>{c.text}</Text>
 								<Text fontSize='sm' color='gray.500'>
-									{moment(c.date).startOf('hour').fromNow()}
+									{moment(c.date).startOf('minute').fromNow()}
 								</Text>
 							</Stack>
 						))
