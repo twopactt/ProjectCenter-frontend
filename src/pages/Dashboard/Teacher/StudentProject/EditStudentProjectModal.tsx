@@ -295,7 +295,7 @@ function EditStudentProjectModal({
 								<DatePicker.Root
 									value={getDateValue()}
 									min={parseDate(initialData.createdDate)}
-									format={date => moment(date.toString()).format('DD.MM.YYYY')}
+									format={date => date.toString()}
 									onValueChange={e => {
 										if (e.value?.[0]) {
 											setDateDeadline(e.value[0].toString())
