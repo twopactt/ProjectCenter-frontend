@@ -1,4 +1,7 @@
-import type { NotificationResponse, UnreadCountResponse } from '@/shared/types/notification'
+import type {
+	NotificationResponse,
+	UnreadCountResponse,
+} from '@/shared/types/notification'
 import api from './axios'
 
 export const getNotifications = async (): Promise<NotificationResponse[]> => {
@@ -34,5 +37,27 @@ export const getUnreadCount = async (): Promise<number> => {
 	} catch (e) {
 		console.error(e)
 		return 0
+	}
+}
+
+export const updateNotificationAsRead = async (
+	id: number,
+): Promise<boolean> => {
+	try {
+		await api.put(`/notifications/${id}/read`)
+		return true
+	} catch (e) {
+		console.error(e)
+		return false
+	}
+}
+
+export const updateNotificationAllAsRead = async (): Promise<boolean> => {
+	try {
+		await api.put(`/notifications/read-all`)
+		return true
+	} catch (e) {
+		console.error(e)
+		return false
 	}
 }
