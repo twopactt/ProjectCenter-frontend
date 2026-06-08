@@ -2,6 +2,7 @@ import ProjectsPage from '@/pages/Projects/ProjectsPage'
 import ProjectPage from '@/pages/Project/ProjectPage'
 import DashboardPage from '@/pages/Dashboard/DashboardPage'
 import ProfilePage from '@/pages/Profile/ProfilePage'
+import NotificationsPage from '@/pages/Notifications/NotificationsPage'
 import AdminPage from '@/pages/Admin/AdminPage'
 import StudentProjectPage from '@/pages/Dashboard/Teacher/StudentProject/StudentProjectPage'
 import type { JSX } from 'react'
@@ -22,6 +23,7 @@ export const routes: RoutesGroup[] = [
 		items: [
 			{ path: '/projects', element: <ProjectsPage /> },
 			{ path: '/profile', element: <ProfilePage /> },
+			{ path: '/notifications', element: <NotificationsPage /> },
 			{ path: '/dashboard', element: <DashboardPage /> },
 			{ path: '/projects/:id', element: <ProjectPage /> },
 		],

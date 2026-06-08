@@ -111,7 +111,7 @@ function StudentProjectPage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='px-4 md:px-8 py-6 flex flex-col md:flex-row items-start w-full gap-2 md:gap-4'>
+			<section className='px-4 md:px-8 py-12 md:py-6 flex flex-col md:flex-row items-start w-full gap-2 md:gap-4'>
 				<Button
 					variant='outline'
 					onClick={() => navigate(-1)}

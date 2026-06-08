@@ -93,7 +93,7 @@ function ProfilePage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='flex items-center justify-center justify-self-center min-h-[85vh] px-4 md:px-8'>
+			<section className='flex items-center justify-center justify-self-center min-h-[90vh] md:min-h-[85vh] px-4 md:px-8'>
 				<ProfileCard user={user} onEditClick={() => setEditOpen(true)} />
 				<EditProfileModal
 					isOpen={editOpen}

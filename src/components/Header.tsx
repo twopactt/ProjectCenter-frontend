@@ -10,18 +10,31 @@ import {
 	Drawer,
 	VStack,
 	CloseButton,
+	Float,
+	Circle,
 } from '@chakra-ui/react'
 import { ColorModeButton } from './ui/color-mode'
 import { getProfile, logout } from '@/services/auth'
+import { getUnreadCount } from '@/services/notifications'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { LuMenu } from 'react-icons/lu'
+import { useEffect, useState } from 'react'
+import { LuBell, LuMenu } from 'react-icons/lu'
 
 function Header() {
 	const profile = getProfile()
 	const navigate = useNavigate()
 	const location = useLocation()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+	const [unreadCount, setUnreadCount] = useState(0)
+
+	useEffect(() => {
+		const fetchUnreadCount = async () => {
+			const count = await getUnreadCount()
+			setUnreadCount(count)
+		}
+
+		fetchUnreadCount()
+	}, [])
 
 	const links = [
 		{
@@ -87,6 +100,23 @@ function Header() {
 
 				<Stack className='!flex-row justify-self-end justify-end items-center gap-2 md:gap-4'>
 					<ColorModeButton className='flex' />
+
+					<Box position='relative'>
+						<IconButton
+							variant='ghost'
+							aria-label='Уведомления'
+							onClick={() => navigate('/notifications')}
+						>
+							<LuBell />
+						</IconButton>
+						{unreadCount > 0 && (
+							<Float offset='1'>
+								<Circle size='5' bg='red' color='white'>
+									{unreadCount > 9 ? '9+' : unreadCount}
+								</Circle>
+							</Float>
+						)}
+					</Box>
 
 					<IconButton
 						variant='ghost'

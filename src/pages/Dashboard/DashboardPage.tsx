@@ -225,7 +225,7 @@ function DashboardPage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='px-4 md:px-8 py-6 flex flex-col gap-8'>
+			<section className='px-4 md:px-8 py-12 md:py-6 flex flex-col gap-8'>
 				<h3 className='font-bold text-2xl text'>
 					{role === 'Student'
 						? 'Мой проект'
