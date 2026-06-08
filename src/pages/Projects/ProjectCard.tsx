@@ -4,6 +4,7 @@ interface ProjectCardProps {
 	id: number
 	title: string
 	studentName: string
+	studentGroup: string
 	teacherName: string
 	onClick: () => void
 }
@@ -12,6 +13,7 @@ function ProjectCard({
 	id,
 	title,
 	studentName,
+	studentGroup,
 	teacherName,
 	onClick,
 }: ProjectCardProps) {
@@ -31,6 +33,10 @@ function ProjectCard({
 					<DataList.Item>
 						<DataList.ItemLabel>Студент</DataList.ItemLabel>
 						<DataList.ItemValue>{studentName}</DataList.ItemValue>
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.ItemLabel>Группа</DataList.ItemLabel>
+						<DataList.ItemValue>{studentGroup}</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
 						<DataList.ItemLabel>Преподаватель</DataList.ItemLabel>

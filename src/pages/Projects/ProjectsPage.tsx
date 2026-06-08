@@ -45,6 +45,7 @@ function ProjectsPage() {
 							id={p.id}
 							title={p.title}
 							studentName={p.studentName}
+							studentGroup={p.studentGroup}
 							teacherName={p.teacherName}
 							onClick={() => navigate(`/projects/${p.id}`)}
 						/>

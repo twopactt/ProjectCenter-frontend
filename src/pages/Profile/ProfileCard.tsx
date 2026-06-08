@@ -19,7 +19,7 @@ export interface UserProfile {
 	email: string
 	phone: string
 	role: string
-	groupName?: string
+	groupDisplayName?: string
 	curatorName?: string
 	photo?: string | null
 }
@@ -80,7 +80,7 @@ function ProfileCard({ user, onEditClick }: Props) {
 						<>
 							<DataList.Item>
 								<DataList.ItemLabel>Группа</DataList.ItemLabel>
-								<DataList.ItemValue>{user.groupName}</DataList.ItemValue>
+								<DataList.ItemValue>{user.groupDisplayName}</DataList.ItemValue>
 							</DataList.Item>
 							<DataList.Item>
 								<DataList.ItemLabel>Куратор</DataList.ItemLabel>

@@ -48,6 +48,7 @@ export interface ProjectUI {
 	typeName: string
 	subjectName: string
 	studentName: string
+	studentGroup: string
 	teacherName: string
 	statusName: string
 
