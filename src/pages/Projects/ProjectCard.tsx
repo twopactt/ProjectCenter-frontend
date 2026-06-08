@@ -1,4 +1,8 @@
 import { Card, CardHeader, CardBody, DataList } from '@chakra-ui/react'
+import moment from 'moment/moment'
+import 'moment/locale/ru'
+
+moment.locale('ru')
 
 interface ProjectCardProps {
 	id: number
@@ -6,6 +10,7 @@ interface ProjectCardProps {
 	studentName: string
 	studentGroup: string
 	teacherName: string
+	dateDeadline: Date
 	onClick: () => void
 }
 
@@ -15,6 +20,7 @@ function ProjectCard({
 	studentName,
 	studentGroup,
 	teacherName,
+	dateDeadline,
 	onClick,
 }: ProjectCardProps) {
 	return (
@@ -41,6 +47,12 @@ function ProjectCard({
 					<DataList.Item>
 						<DataList.ItemLabel>Преподаватель</DataList.ItemLabel>
 						<DataList.ItemValue>{teacherName}</DataList.ItemValue>
+					</DataList.Item>
+					<DataList.Item>
+						<DataList.ItemLabel>Дата сдачи</DataList.ItemLabel>
+						<DataList.ItemValue>
+							{moment(dateDeadline).format('YYYY')}
+						</DataList.ItemValue>
 					</DataList.Item>
 				</DataList.Root>
 			</CardBody>

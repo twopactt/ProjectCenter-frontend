@@ -47,6 +47,7 @@ function ProjectsPage() {
 							studentName={p.studentName}
 							studentGroup={p.studentGroup}
 							teacherName={p.teacherName}
+							dateDeadline={p.dateDeadline}
 							onClick={() => navigate(`/projects/${p.id}`)}
 						/>
 					))}
