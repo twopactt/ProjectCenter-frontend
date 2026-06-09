@@ -15,6 +15,25 @@ export const getProjects = async (): Promise<ProjectResponse[]> => {
 	}
 }
 
+export const getProjectsWithFilters = async (
+	searchText?: string,
+	year?: number,
+	groupId?: number,
+): Promise<ProjectResponse[]> => {
+	try {
+		const params: Record<string, string | number> = {}
+		if (searchText) params.searchText = searchText
+		if (year) params.year = year
+		if (groupId) params.groupId = groupId
+
+		const response = await api.get<ProjectResponse[]>('/projects', { params })
+		return response.data ?? []
+	} catch (e) {
+		console.error(e)
+		return []
+	}
+}
+
 export const getProjectById = async (
 	id: number,
 ): Promise<ProjectResponse | null> => {
