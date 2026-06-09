@@ -101,7 +101,7 @@ function ProjectsPage() {
 		<Layout>
 			<Header />
 
-			<section className='px-4 md:px-8 py-12 md:py-6 flex flex-col gap-6'>
+			<section className='px-4 md:px-8 py-6 flex flex-col gap-6'>
 				<h3 className='font-bold text-2xl'>Все проекты</h3>
 
 				<Box className='flex flex-col md:flex-row gap-4'>

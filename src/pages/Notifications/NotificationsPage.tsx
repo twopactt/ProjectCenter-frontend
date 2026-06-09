@@ -49,7 +49,7 @@ function NotificationsPage() {
 		return (
 			<Layout>
 				<Header key={refreshKey} />
-				<section className='px-4 md:px-8 py-12 md:py-6 flex flex-col gap-6'>
+				<section className='px-4 md:px-8 py-6 flex flex-col gap-6'>
 					<h3 className='font-bold text-2xl'>Уведомления</h3>
 					<Text className='text-center text-gray-500 py-8'>Загрузка...</Text>
 				</section>
@@ -60,7 +60,7 @@ function NotificationsPage() {
 	return (
 		<Layout>
 			<Header />
-			<section className='px-4 md:px-8 py-12 md:py-6 flex flex-col gap-6'>
+			<section className='px-4 md:px-8 py-6 flex flex-col gap-6'>
 				<div className='flex justify-between items-center flex-wrap gap-4'>
 					<h3 className='font-bold text-2xl'>Уведомления</h3>
 					{hasUnread && (

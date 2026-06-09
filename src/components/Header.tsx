@@ -73,9 +73,13 @@ function Header() {
 			<Stack
 				bg='bg'
 				className='!flex-row px-4 md:px-8 py-4 right-0 left-0 top-0 fixed z-50 border-b justify-between'
+				overflow='hidden'
 			>
-				<Stack className='!flex-row items-center'>
-					<Text className='font-bold text-lg md:text-2xl'>
+				<Stack className='!flex-row items-center' minW={0} flex={1}>
+					<Text
+						className='font-bold text-sm md:text-lg lg:text-2xl'
+						wordBreak='break-word'
+					>
 						Центр проектной деятельности
 					</Text>
 
@@ -98,7 +102,10 @@ function Header() {
 					</Box>
 				</Stack>
 
-				<Stack className='!flex-row justify-self-end justify-end items-center gap-2 md:gap-4'>
+				<Stack
+					className='!flex-row justify-self-end justify-end items-center gap-2 md:gap-4'
+					flexShrink={0}
+				>
 					<ColorModeButton className='flex' />
 
 					<Box position='relative'>
