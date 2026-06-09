@@ -30,7 +30,6 @@ function ProfilePage() {
 				}
 
 				setUser(normalized)
-				localStorage.setItem('profile', JSON.stringify(normalized))
 			} catch (e) {
 				console.error('Ошибка загрузки профиля', e)
 			}
@@ -70,7 +69,6 @@ function ProfilePage() {
 			}
 
 			setUser(normalized)
-			localStorage.setItem('profile', JSON.stringify(normalized))
 			showSuccess('Профиль обновлён')
 			setEditOpen(false)
 		} catch {

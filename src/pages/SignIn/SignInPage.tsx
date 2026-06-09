@@ -1,5 +1,6 @@
 import { ColorModeButton } from '@/components/ui/color-mode'
 import { login } from '@/services/auth'
+import { useAuth } from '@/store/auth'
 import {
 	Button,
 	Card,
@@ -25,6 +26,7 @@ function SignInPage() {
 	const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
 	const [open, setOpen] = useState(false)
 	const navigate = useNavigate()
+	const setUser = useAuth(s => s.setUser)
 
 	const handleClickOpen = () => {
 		setOpen(true)
@@ -71,6 +73,7 @@ function SignInPage() {
 			return
 		}
 
+		setUser(result)
 		navigate('/dashboard')
 	}
 

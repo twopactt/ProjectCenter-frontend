@@ -14,14 +14,15 @@ import {
 	Circle,
 } from '@chakra-ui/react'
 import { ColorModeButton } from './ui/color-mode'
-import { getProfile, logout } from '@/services/auth'
+import { logout } from '@/services/auth'
+import { useAuth } from '@/store/auth'
 import { getUnreadCount } from '@/services/notifications'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import { LuBell, LuMenu } from 'react-icons/lu'
 
 function Header() {
-	const profile = getProfile()
+	const profile = useAuth(s => s.user)
 	const navigate = useNavigate()
 	const location = useLocation()
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)

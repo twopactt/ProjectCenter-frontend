@@ -3,17 +3,24 @@ import api from './axios'
 import type { LoginRequest, ProfileResponse } from '@/shared/types/auth'
 import { getPhotoUrl } from './utils'
 
+export const decodeToken = (token: string): Record<string, unknown> | null => {
+	try {
+		const payload = token.split('.')[1]
+		return JSON.parse(atob(payload))
+	} catch {
+		return null
+	}
+}
+
 export const login = async (
 	data: LoginRequest,
 ): Promise<ProfileResponse | null> => {
 	try {
 		const response = await api.post(`/auth/login`, data)
 
-		const { token, role, fullName } = response.data
+		const { token } = response.data
 
 		localStorage.setItem('token', token)
-		localStorage.setItem('role', role)
-		localStorage.setItem('fullName', fullName)
 
 		const profile = await api.get(`/profile`, {
 			headers: { Authorization: `Bearer ${token}` },
@@ -24,8 +31,6 @@ export const login = async (
 			photo: getPhotoUrl(profile.data.photo),
 		}
 
-		localStorage.setItem('profile', JSON.stringify(normalized))
-
 		return normalized
 	} catch (e) {
 		console.error(e)
@@ -35,26 +40,27 @@ export const login = async (
 
 export const logout = () => {
 	localStorage.removeItem('token')
-	localStorage.removeItem('role')
-	localStorage.removeItem('fullName')
-	localStorage.removeItem('profile')
 
 	window.location.href = '/login'
 }
 
 export const getToken = () => localStorage.getItem('token')
-export const getRole = () => localStorage.getItem('role')
 
-export const getProfile = (): ProfileResponse | null => {
-	const data = localStorage.getItem('profile')
-	if (!data) return null
+export const getRole = (): string | null => {
+	const token = getToken()
+	if (!token) return null
 
-	try {
-		const profile = JSON.parse(data) as ProfileResponse
-		return profile
-	} catch {
-		return null
-	}
+	const payload = decodeToken(token)
+	if (!payload) return null
+
+	const role = payload.role as string | undefined
+	if (role) return role
+
+	return (
+		(payload[
+			'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+		] as string | undefined) ?? null
+	)
 }
 
 export const validateToken = async (): Promise<boolean> => {

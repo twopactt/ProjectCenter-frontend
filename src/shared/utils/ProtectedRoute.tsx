@@ -1,4 +1,5 @@
 import { getRole, getToken, logout, validateToken } from '@/services/auth'
+import { useAuth } from '@/store/auth'
 import type { JSX } from '@emotion/react/jsx-runtime'
 import { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
@@ -11,6 +12,7 @@ interface Props {
 function ProtectedRoute({ children, roles }: Props) {
 	const [isValidating, setIsValidating] = useState(true)
 	const [isValid, setIsValid] = useState(false)
+	const fetchProfile = useAuth(s => s.fetchProfile)
 
 	useEffect(() => {
 		const checkToken = async () => {
@@ -26,10 +28,14 @@ function ProtectedRoute({ children, roles }: Props) {
 			const valid = await validateToken()
 			setIsValid(valid)
 			setIsValidating(false)
+
+			if (valid) {
+				await fetchProfile()
+			}
 		}
 
 		checkToken()
-	}, [])
+	}, [fetchProfile])
 
 	if (isValidating) {
 		return <div>Загрузка...</div>

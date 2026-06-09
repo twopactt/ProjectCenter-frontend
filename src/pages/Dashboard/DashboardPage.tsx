@@ -1,5 +1,6 @@
 import Header from '@/components/Header'
 import Layout from '@/components/Layout'
+import { getRole } from '@/services/auth'
 import { getSubjects, getTypes } from '@/services/directory'
 import { createProject, getMyProject } from '@/services/projects'
 import type { ProjectUI } from '@/shared/types/project'
@@ -26,7 +27,7 @@ function DashboardPage() {
 	const [subjectId, setSubjectId] = useState<number | null>(null)
 	const [isModalOpen, setIsModalOpen] = useState(false)
 
-	const role = localStorage.getItem('role')
+	const role = getRole()
 
 	const resetProjectForm = () => {
 		setTitle('')

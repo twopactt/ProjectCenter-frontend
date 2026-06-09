@@ -1,11 +1,14 @@
 import { create } from 'zustand'
 import type { ProfileResponse } from '@/shared/types/auth'
+import api from '@/services/axios'
+import { getPhotoUrl } from '@/services/utils'
+import { getToken } from '@/services/auth'
 
 interface AuthState {
 	user: ProfileResponse | null
 	setUser: (user: ProfileResponse) => void
 	logout: () => void
-	loadFromLocalStorage: () => void
+	fetchProfile: () => Promise<void>
 }
 
 export const useAuth = create<AuthState>(set => ({
@@ -15,21 +18,22 @@ export const useAuth = create<AuthState>(set => ({
 
 	logout: () => {
 		localStorage.removeItem('token')
-		localStorage.removeItem('role')
-		localStorage.removeItem('fullName')
-		localStorage.removeItem('profile')
 		set({ user: null })
 	},
 
-	loadFromLocalStorage: () => {
-		try {
-			const data = localStorage.getItem('profile')
-			if (!data) return
+	fetchProfile: async () => {
+		const token = getToken()
+		if (!token) return
 
-			const user: ProfileResponse = JSON.parse(data)
-			set({ user })
+		try {
+			const response = await api.get('/Profile')
+			const normalized = {
+				...response.data,
+				photo: getPhotoUrl(response.data.photo),
+			}
+			set({ user: normalized })
 		} catch {
-			console.error('Failed to parse stored profile')
+			console.error('Failed to fetch profile')
 		}
 	},
 }))
