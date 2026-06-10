@@ -226,6 +226,7 @@ function DashboardPage() {
 									resetProjectForm()
 								}}
 								onUpdated={handleProjectUpdate}
+								onRefresh={refreshProject}
 							/>
 						</div>
 					) : (

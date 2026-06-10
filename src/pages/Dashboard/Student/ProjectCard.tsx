@@ -30,9 +30,15 @@ interface ProjectCardProps {
 	project: ProjectUI
 	onUpdated: (updatedProject: ProjectUI) => void
 	onDeleted: () => void
+	onRefresh?: () => Promise<void>
 }
 
-function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
+function ProjectCard({
+	project,
+	onUpdated,
+	onDeleted,
+	onRefresh,
+}: ProjectCardProps) {
 	const [localProject, setLocalProject] = useState(project)
 	const [editOpen, setEditOpen] = useState(false)
 	const [deleteModalOpen, setDeleteModalOpen] = useState(false)
@@ -289,9 +295,12 @@ function ProjectCard({ project, onUpdated, onDeleted }: ProjectCardProps) {
 					isPublic={project.isPublic}
 					existingProjectFile={existingProjectFile}
 					existingDocFile={existingDocFile}
-					onUpdated={updatedData => {
+					onUpdated={async updatedData => {
 						showSuccess('Проект обновлён')
 						handleUpdate(updatedData)
+						if (onRefresh) {
+							await onRefresh()
+						}
 						setEditOpen(false)
 					}}
 				/>
