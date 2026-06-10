@@ -196,28 +196,7 @@ function DashboardPage() {
 
 		if (!response) return
 
-		setProject({
-			id: response.id,
-			title: response.title,
-			typeId: response.typeId,
-			subjectId: response.subjectId,
-			isPublic: response.isPublic,
-
-			typeName: response.typeName,
-			subjectName: response.subjectName,
-			studentName: response.studentName,
-			teacherName: response.teacherName,
-			statusName: response.statusName,
-
-			dateDeadline: moment(response.deadline).toDate(),
-			createdDate: moment(response.createdAt).toDate(),
-
-			comments:
-				response.comments?.map(c => ({
-					...c,
-					date: moment(c.date).toDate(),
-				})) ?? [],
-		})
+		await refreshProject()
 
 		setIsModalOpen(false)
 		resetProjectForm()
