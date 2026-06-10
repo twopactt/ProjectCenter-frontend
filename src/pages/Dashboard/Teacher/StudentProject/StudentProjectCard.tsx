@@ -135,26 +135,30 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 		}
 	}
 
+	const refreshGrade = async () => {
+		const updatedProject = await getStudentProjectById(project.id)
+		if (!updatedProject) return
+
+		setProjectState(prev => ({
+			...prev,
+			statusName: updatedProject.statusName,
+			grade: updatedProject.gradeValue
+				? [
+						{
+							teacherFullName: updatedProject.gradedBy || '',
+							value: updatedProject.gradeValue,
+							comment: updatedProject.gradeComment || '',
+							createdAt: new Date(updatedProject.gradeDate || Date.now()),
+						},
+					]
+				: [],
+		}))
+	}
+
 	const handleCreateGrade = async (value: number, comment: string) => {
 		const success = await createGrade(project.id, value, comment)
 		if (success) {
-			const updatedProject = await getStudentProjectById(project.id)
-			if (updatedProject) {
-				const updatedUI: ProjectUI = {
-					...projectState,
-					grade: updatedProject.gradeValue
-						? [
-								{
-									teacherFullName: updatedProject.gradedBy || '',
-									value: updatedProject.gradeValue,
-									comment: updatedProject.gradeComment || '',
-									createdAt: new Date(updatedProject.gradeDate || Date.now()),
-								},
-							]
-						: [],
-				}
-				setProjectState(updatedUI)
-			}
+			await refreshGrade()
 		} else {
 			showError('Не удалось добавить оценку')
 			throw new Error('Failed to add grade')
@@ -164,23 +168,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 	const handleUpdateGrade = async (value: number, comment: string) => {
 		const success = await updateGrade(project.id, value, comment)
 		if (success) {
-			const updatedProject = await getStudentProjectById(project.id)
-			if (updatedProject) {
-				const updatedUI: ProjectUI = {
-					...projectState,
-					grade: updatedProject.gradeValue
-						? [
-								{
-									teacherFullName: updatedProject.gradedBy || '',
-									value: updatedProject.gradeValue,
-									comment: updatedProject.gradeComment || '',
-									createdAt: new Date(updatedProject.gradeDate || Date.now()),
-								},
-							]
-						: [],
-				}
-				setProjectState(updatedUI)
-			}
+			await refreshGrade()
 		} else {
 			showError('Не удалось обновить оценку')
 			throw new Error('Failed to update grade')
@@ -214,7 +202,7 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					<DataList.Item>
 						<DataList.ItemLabel>Статус</DataList.ItemLabel>
 						<DataList.ItemValue>
-							<StatusProjectBadge status={project.statusName} />
+							<StatusProjectBadge status={projectState.statusName} />
 						</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
