@@ -12,6 +12,7 @@ import { transformProjectResponse } from '@/shared/helpers/projectTransform'
 import CreateProjectModal from './Student/CreateProjectModal'
 import ProjectCard from './Student/ProjectCard'
 import TeacherProjectsList from './Teacher/TeacherProjectsList'
+import AdminDashboard from './Admin/AdminDashboard'
 import config from '@/services/config'
 
 function DashboardPage() {
@@ -146,11 +147,7 @@ function DashboardPage() {
 						</div>
 					)
 				) : (
-					<div className='flex flex-col items-center justify-center gap-8 min-h-[60vh]'>
-						<Text fontSize='2xl' fontWeight='bold'>
-							Скоро
-						</Text>
-					</div>
+					<AdminDashboard />
 				)}
 			</section>
 		</Layout>
