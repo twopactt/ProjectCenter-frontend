@@ -31,28 +31,29 @@ function DashboardPage() {
 	}
 
 	useEffect(() => {
-		if (role === 'Admin') return
+		if (role === 'Student')
+		{
+			const load = async () => {
+				const [myProjectData, typesData, subjectsData] = await Promise.all([
+					getMyProject(),
+					getTypes(),
+					getSubjects(),
+				])
 
-		const load = async () => {
-			const [myProjectData, typesData, subjectsData] = await Promise.all([
-				getMyProject(),
-				getTypes(),
-				getSubjects(),
-			])
+				setTypes(typesData)
+				setSubjects(subjectsData)
 
-			setTypes(typesData)
-			setSubjects(subjectsData)
-
-			if (myProjectData) {
-				const ui = await transformProjectResponse(
-					myProjectData,
-					config.api.staticUrl,
-				)
-				setProject(ui)
+				if (myProjectData) {
+					const ui = await transformProjectResponse(
+						myProjectData,
+						config.api.staticUrl,
+					)
+					setProject(ui)
+				}
 			}
-		}
 
-		load()
+			load()
+		}
 	}, [role])
 
 	const typeCollection = createListCollection<{ value: string; label: string }>(
