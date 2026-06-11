@@ -3,7 +3,7 @@ import Layout from '@/components/Layout'
 import { getToken } from '@/services/auth'
 import api from '@/services/axios'
 import { useAuth } from '@/store/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import ProfileCard from './ProfileCard'
 import { getPhotoUrl } from '@/services/utils'
 import EditProfileModal from './EditProfileModal'
@@ -13,30 +13,6 @@ function ProfilePage() {
 	const { user, setUser } = useAuth()
 	const [editOpen, setEditOpen] = useState(false)
 	const [loading, setLoading] = useState(false)
-
-	useEffect(() => {
-		const loadProfile = async () => {
-			try {
-				const token = getToken()
-				if (!token) return
-
-				const response = await api.get('/Profile', {
-					headers: { Authorization: `Bearer ${token}` },
-				})
-
-				const normalized = {
-					...response.data,
-					photo: getPhotoUrl(response.data.photo),
-				}
-
-				setUser(normalized)
-			} catch (e) {
-				console.error('Ошибка загрузки профиля', e)
-			}
-		}
-
-		if (!user) loadProfile()
-	}, [user, setUser])
 
 	const handleSave = async (
 		email: string,

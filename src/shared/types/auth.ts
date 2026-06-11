@@ -7,12 +7,12 @@ export interface ProfileResponse {
 	id: number
 	surname: string
 	name: string
-	patronymic: string
+	patronymic?: string
 	login: string
 	email: string
 	phone: string
 	role: string
-	photo: string
-	groupName: string
-	curatorName: string
+	groupDisplayName?: string
+	curatorName?: string
+	photo: string | null
 }

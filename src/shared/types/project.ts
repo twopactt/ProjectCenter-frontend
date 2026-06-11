@@ -17,7 +17,7 @@ export interface ProjectResponse {
 	studentName: string
 	teacherName: string
 	statusName: string
-	studentGroup?: string
+	studentGroup: string
 
 	dateDeadline: string
 	createdDate: string
@@ -45,7 +45,7 @@ export interface ProjectUI {
 	typeName: string
 	subjectName: string
 	studentName: string
-	studentGroup?: string
+	studentGroup: string
 	teacherName: string
 	statusName: string
 

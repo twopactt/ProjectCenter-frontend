@@ -9,23 +9,10 @@ import {
 	DataList,
 } from '@chakra-ui/react'
 import { LuPencil } from 'react-icons/lu'
-
-export interface UserProfile {
-	id: number
-	name: string
-	surname: string
-	patronymic?: string
-	login: string
-	email: string
-	phone: string
-	role: string
-	groupDisplayName?: string
-	curatorName?: string
-	photo?: string | null
-}
+import type { ProfileResponse } from '@/shared/types/auth'
 
 interface Props {
-	user: UserProfile
+	user: ProfileResponse
 	onEditClick: () => void
 }
 
@@ -48,10 +35,12 @@ function ProfileCard({ user, onEditClick }: Props) {
 						<DataList.ItemLabel>Имя</DataList.ItemLabel>
 						<DataList.ItemValue>{user.name}</DataList.ItemValue>
 					</DataList.Item>
-					<DataList.Item>
-						<DataList.ItemLabel>Отчество</DataList.ItemLabel>
-						<DataList.ItemValue>{user.patronymic}</DataList.ItemValue>
-					</DataList.Item>
+					{user.patronymic && (
+						<DataList.Item>
+							<DataList.ItemLabel>Отчество</DataList.ItemLabel>
+							<DataList.ItemValue>{user.patronymic}</DataList.ItemValue>
+						</DataList.Item>
+					)}
 					<DataList.Item>
 						<DataList.ItemLabel>Логин</DataList.ItemLabel>
 						<DataList.ItemValue>{user.login}</DataList.ItemValue>

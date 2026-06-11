@@ -5,7 +5,6 @@ import 'moment/locale/ru'
 moment.locale('ru')
 
 interface ProjectCardProps {
-	id: number
 	title: string
 	studentName: string
 	studentGroup: string
@@ -15,7 +14,6 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({
-	id,
 	title,
 	studentName,
 	studentGroup,
