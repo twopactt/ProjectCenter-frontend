@@ -6,14 +6,12 @@ interface CreateCommentModalProps {
 	isOpen: boolean
 	onClose: () => void
 	onSubmit: (text: string) => Promise<void>
-	projectId: number
 }
 
 export function CreateCommentModal({
 	isOpen,
 	onClose,
 	onSubmit,
-	projectId,
 }: CreateCommentModalProps) {
 	const [comment, setComment] = useState('')
 	const [isLoading, setIsLoading] = useState(false)

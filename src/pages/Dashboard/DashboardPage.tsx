@@ -8,15 +8,11 @@ import { useEffect, useState } from 'react'
 import { createListCollection, Text } from '@chakra-ui/react'
 import type { TypeResponse } from '@/shared/types/typeProject'
 import type { SubjectResponse } from '@/shared/types/subject'
+import { transformProjectResponse } from '@/shared/helpers/projectTransform'
 import CreateProjectModal from './Student/CreateProjectModal'
 import ProjectCard from './Student/ProjectCard'
 import TeacherProjectsList from './Teacher/TeacherProjectsList'
-import moment from 'moment'
-import 'moment/locale/ru'
 import config from '@/services/config'
-import { getFileSize } from '@/shared/utils/fileSize'
-
-moment.locale('ru')
 
 function DashboardPage() {
 	const [project, setProject] = useState<ProjectUI | null>(null)
@@ -25,7 +21,6 @@ function DashboardPage() {
 	const [title, setTitle] = useState('')
 	const [typeId, setTypeId] = useState<number | null>(null)
 	const [subjectId, setSubjectId] = useState<number | null>(null)
-	const [isModalOpen, setIsModalOpen] = useState(false)
 
 	const role = getRole()
 
@@ -36,6 +31,8 @@ function DashboardPage() {
 	}
 
 	useEffect(() => {
+		if (role === 'Admin') return
+
 		const load = async () => {
 			const [myProjectData, typesData, subjectsData] = await Promise.all([
 				getMyProject(),
@@ -47,67 +44,16 @@ function DashboardPage() {
 			setSubjects(subjectsData)
 
 			if (myProjectData) {
-				const projectFileSize = myProjectData.fileProject
-					? await getFileSize(config.api.staticUrl + myProjectData.fileProject)
-					: 0
-				const docFileSize = myProjectData.fileDocumentation
-					? await getFileSize(
-							config.api.staticUrl + myProjectData.fileDocumentation,
-						)
-					: 0
-
-				setProject({
-					id: myProjectData.id,
-					title: myProjectData.title,
-					typeId: myProjectData.typeId,
-					subjectId: myProjectData.subjectId,
-					isPublic: myProjectData.isPublic,
-
-					typeName: myProjectData.typeName,
-					subjectName: myProjectData.subjectName,
-					studentName: myProjectData.studentName,
-					teacherName: myProjectData.teacherName,
-					statusName: myProjectData.statusName,
-
-					dateDeadline: new Date(myProjectData.dateDeadline),
-					createdDate: new Date(myProjectData.createdDate),
-
-					comments: myProjectData.comments.map(c => ({
-						...c,
-						date: new Date(c.date),
-					})),
-					grade: myProjectData.gradeValue
-						? [
-								{
-									teacherFullName: myProjectData.gradedBy,
-									value: myProjectData.gradeValue,
-									comment: myProjectData.gradeComment,
-									createdAt: new Date(myProjectData.gradeDate),
-								},
-							]
-						: [],
-					projectFile: myProjectData.fileProject
-						? {
-								url: config.api.staticUrl + myProjectData.fileProject,
-								fileName: myProjectData.fileProject.split('/').pop() || 'file',
-								fileSize: projectFileSize,
-							}
-						: null,
-
-					docFile: myProjectData.fileDocumentation
-						? {
-								url: config.api.staticUrl + myProjectData.fileDocumentation,
-								fileName:
-									myProjectData.fileDocumentation.split('/').pop() || 'file',
-								fileSize: docFileSize,
-							}
-						: null,
-				})
+				const ui = await transformProjectResponse(
+					myProjectData,
+					config.api.staticUrl,
+				)
+				setProject(ui)
 			}
 		}
 
 		load()
-	}, [])
+	}, [role])
 
 	const typeCollection = createListCollection<{ value: string; label: string }>(
 		{
@@ -125,58 +71,11 @@ function DashboardPage() {
 	const refreshProject = async () => {
 		const myProjectData = await getMyProject()
 		if (myProjectData) {
-			const projectFileSize = myProjectData.fileProject
-				? await getFileSize(config.api.staticUrl + myProjectData.fileProject)
-				: 0
-			const docFileSize = myProjectData.fileDocumentation
-				? await getFileSize(
-						config.api.staticUrl + myProjectData.fileDocumentation,
-					)
-				: 0
-
-			setProject({
-				id: myProjectData.id,
-				title: myProjectData.title,
-				typeId: myProjectData.typeId,
-				subjectId: myProjectData.subjectId,
-				isPublic: myProjectData.isPublic,
-				typeName: myProjectData.typeName,
-				subjectName: myProjectData.subjectName,
-				studentName: myProjectData.studentName,
-				teacherName: myProjectData.teacherName,
-				statusName: myProjectData.statusName,
-				dateDeadline: new Date(myProjectData.dateDeadline),
-				createdDate: new Date(myProjectData.createdDate),
-				comments: myProjectData.comments.map(c => ({
-					...c,
-					date: new Date(c.date),
-				})),
-				grade: myProjectData.gradeValue
-					? [
-							{
-								teacherFullName: myProjectData.gradedBy,
-								value: myProjectData.gradeValue,
-								comment: myProjectData.gradeComment,
-								createdAt: new Date(myProjectData.gradeDate),
-							},
-						]
-					: [],
-				projectFile: myProjectData.fileProject
-					? {
-							url: config.api.staticUrl + myProjectData.fileProject,
-							fileName: myProjectData.fileProject.split('/').pop() || 'file',
-							fileSize: projectFileSize,
-						}
-					: null,
-				docFile: myProjectData.fileDocumentation
-					? {
-							url: config.api.staticUrl + myProjectData.fileDocumentation,
-							fileName:
-								myProjectData.fileDocumentation.split('/').pop() || 'file',
-							fileSize: docFileSize,
-						}
-					: null,
-			})
+			const ui = await transformProjectResponse(
+				myProjectData,
+				config.api.staticUrl,
+			)
+			setProject(ui)
 		}
 	}
 
@@ -197,8 +96,6 @@ function DashboardPage() {
 		if (!response) return
 
 		await refreshProject()
-
-		setIsModalOpen(false)
 		resetProjectForm()
 	}
 
@@ -235,9 +132,6 @@ function DashboardPage() {
 								У вас пока нет проекта
 							</Text>
 							<CreateProjectModal
-								isOpen={isModalOpen}
-								onOpen={() => setIsModalOpen(true)}
-								onClose={() => setIsModalOpen(false)}
 								title={title}
 								setTitle={setTitle}
 								typeCollection={typeCollection}

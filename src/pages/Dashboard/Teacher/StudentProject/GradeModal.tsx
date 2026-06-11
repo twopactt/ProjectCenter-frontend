@@ -29,34 +29,29 @@ export function GradeModal({
 	const [value, setValue] = useState(initialValue)
 	const [comment, setComment] = useState(initialComment)
 	const [isLoading, setIsLoading] = useState(false)
-	const [error, setError] = useState('')
 	const [valueError, setValueError] = useState(false)
 
 	useEffect(() => {
 		if (isOpen) {
 			setValue(initialValue)
 			setComment(initialComment)
-			setError('')
 			setValueError(false)
 		}
 	}, [isOpen, initialValue, initialComment])
 
 	const handleSubmit = async () => {
 		if (value === 0) {
-			setError('Пожалуйста, поставьте оценку')
 			setValueError(true)
 			showError('Оценка не должна быть пустой')
 			return
 		}
 
 		if (comment.length > 1000) {
-			setError('Комментарий не может превышать 1000 символов')
 			showError('Слишком длинный текст комментария')
 			return
 		}
 
 		setIsLoading(true)
-		setError('')
 		setValueError(false)
 
 		try {
@@ -75,7 +70,6 @@ export function GradeModal({
 	const handleClose = () => {
 		setValue(initialValue)
 		setComment(initialComment)
-		setError('')
 		setValueError(false)
 		onClose()
 	}
@@ -84,7 +78,6 @@ export function GradeModal({
 		setValue(newValue)
 		if (valueError && newValue > 0) {
 			setValueError(false)
-			setError('')
 		}
 	}
 

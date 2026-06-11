@@ -15,9 +15,6 @@ import { useState } from 'react'
 type Item = { value: string; label: string }
 
 interface Props {
-	isOpen: boolean
-	onOpen: () => void
-	onClose: () => void
 	title: string
 	setTitle: (v: string) => void
 	typeCollection: ListCollection<Item>

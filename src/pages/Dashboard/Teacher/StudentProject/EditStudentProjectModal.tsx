@@ -17,10 +17,8 @@ import { updateStudentProjectById } from '@/services/projects'
 import { LuCalendar } from 'react-icons/lu'
 import type { ProjectUI } from '@/shared/types/project'
 import { showError, showSuccess } from '@/shared/utils/toast'
-import moment from 'moment/moment'
-import 'moment/locale/ru'
-
-moment.locale('ru')
+import config from '@/services/config'
+import { transformProjectResponse } from '@/shared/helpers/projectTransform'
 
 interface Props {
 	isOpen: boolean
@@ -135,7 +133,8 @@ function EditStudentProjectModal({
 
 		if (updated) {
 			showSuccess('Проект успешно обновлен')
-			onUpdated(updated)
+			const ui = await transformProjectResponse(updated, config.api.staticUrl)
+			onUpdated(ui)
 			onClose()
 		} else {
 			showError('Не удалось обновить проект')

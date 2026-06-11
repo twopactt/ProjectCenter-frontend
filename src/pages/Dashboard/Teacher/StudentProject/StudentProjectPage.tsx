@@ -6,13 +6,9 @@ import Header from '@/components/Header'
 import { getStudentProjectById } from '@/services/projects'
 import type { ProjectUI } from '@/shared/types/project'
 import { LuArrowLeft } from 'react-icons/lu'
-import moment from 'moment/moment'
-import 'moment/locale/ru'
 import StudentProjectCard from './StudentProjectCard'
 import config from '@/services/config'
-import { getFileSize } from '@/shared/utils/fileSize'
-
-moment.locale('ru')
+import { transformProjectResponse } from '@/shared/helpers/projectTransform'
 
 function StudentProjectPage() {
 	const { id } = useParams()
@@ -26,59 +22,11 @@ function StudentProjectPage() {
 			const data = await getStudentProjectById(Number(id))
 
 			if (data) {
-				const projectFileSize = data.fileProject
-					? await getFileSize(config.api.staticUrl + data.fileProject)
-					: 0
-				const docFileSize = data.fileDocumentation
-					? await getFileSize(config.api.staticUrl + data.fileDocumentation)
-					: 0
-
-				setProject({
-					id: data.id,
-					title: data.title,
-					typeId: data.typeId,
-					subjectId: data.subjectId,
-					isPublic: data.isPublic,
-
-					typeName: data.typeName,
-					subjectName: data.subjectName,
-					studentName: data.studentName,
-					teacherName: data.teacherName,
-					statusName: data.statusName,
-
-					dateDeadline: new Date(data.dateDeadline),
-					createdDate: new Date(data.createdDate),
-
-					comments:
-						data.comments?.map(c => ({
-							...c,
-							date: new Date(c.date),
-						})) ?? [],
-					grade: data.gradeValue
-						? [
-								{
-									teacherFullName: data.gradedBy || '',
-									value: data.gradeValue,
-									comment: data.gradeComment || '',
-									createdAt: new Date(data.gradeDate || Date.now()),
-								},
-							]
-						: [],
-					projectFile: data.fileProject
-						? {
-								url: config.api.staticUrl + data.fileProject,
-								fileName: data.fileProject.split('/').pop() || 'file',
-								fileSize: projectFileSize,
-							}
-						: null,
-					docFile: data.fileDocumentation
-						? {
-								url: config.api.staticUrl + data.fileDocumentation,
-								fileName: data.fileDocumentation.split('/').pop() || 'file',
-								fileSize: docFileSize,
-							}
-						: null,
-				})
+				const ui = await transformProjectResponse(
+					data,
+					config.api.staticUrl,
+				)
+				setProject(ui)
 			}
 			setLoading(false)
 		}

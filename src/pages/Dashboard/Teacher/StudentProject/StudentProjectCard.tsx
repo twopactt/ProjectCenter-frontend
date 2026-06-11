@@ -44,10 +44,6 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 	const [commentModalOpen, setCommentModalOpen] = useState(false)
 	const [types, setTypes] = useState<TypeResponse[]>([])
 	const [subjects, setSubjects] = useState<SubjectResponse[]>([])
-	const [existingProjectFile, setExistingProjectFile] = useState<File | null>(
-		null,
-	)
-	const [existingDocFile, setExistingDocFile] = useState<File | null>(null)
 	const resolvedTypeId = types.find(t => t.name === projectState.typeName)?.id
 	const resolvedSubjectId = subjects.find(
 		s => s.name === projectState.subjectName,
@@ -64,41 +60,6 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 		}
 		loadData()
 	}, [])
-
-	useEffect(() => {
-		if (editOpen) {
-			const loadFiles = async () => {
-				if (project.projectFile?.url && project.projectFile?.fileName) {
-					const file = await urlToFile(
-						project.projectFile.url,
-						project.projectFile.fileName,
-					)
-					setExistingProjectFile(file)
-				}
-				if (project.docFile?.url && project.docFile?.fileName) {
-					const file = await urlToFile(
-						project.docFile.url,
-						project.docFile.fileName,
-					)
-					setExistingDocFile(file)
-				}
-			}
-			loadFiles()
-		}
-	}, [editOpen])
-
-	const urlToFile = async (
-		url: string,
-		fileName: string,
-	): Promise<File | null> => {
-		try {
-			const response = await fetch(url)
-			const blob = await response.blob()
-			return new File([blob], fileName, { type: blob.type })
-		} catch {
-			return null
-		}
-	}
 
 	const handleUpdated = (updatedProject: ProjectUI) => {
 		setProjectState({
@@ -418,7 +379,6 @@ function StudentProjectCard({ project }: StudentProjectCardProps) {
 					isOpen={commentModalOpen}
 					onClose={() => setCommentModalOpen(false)}
 					onSubmit={handleCreateComment}
-					projectId={project.id}
 				/>
 				<GradeModal
 					isOpen={gradeModalOpen}

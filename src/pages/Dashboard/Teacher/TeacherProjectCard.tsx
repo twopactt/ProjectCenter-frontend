@@ -2,26 +2,18 @@ import { Card, CardHeader, CardBody, DataList } from '@chakra-ui/react'
 import { StatusProjectBadge } from '@/components/StatusProjectBadge'
 
 interface TeacherProjectCardProps {
-	id: number
 	fullName: string
 	groupName: string
-	projectId: number
 	projectTitle: string
 	projectStatus: string
-	grade: number
-	gradeComment: string
 	onClick: () => void
 }
 
 function TeacherProjectCard({
-	id,
 	fullName,
 	groupName,
-	projectId,
 	projectTitle,
 	projectStatus,
-	grade,
-	gradeComment,
 	onClick,
 }: TeacherProjectCardProps) {
 	return (

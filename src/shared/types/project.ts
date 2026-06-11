@@ -17,25 +17,22 @@ export interface ProjectResponse {
 	studentName: string
 	teacherName: string
 	statusName: string
+	studentGroup?: string
 
-	deadline: string
-	createdAt: string
+	dateDeadline: string
+	createdDate: string
 	comments: {
 		userFullName: string
 		text: string
 		date: string
 	}[]
 
-	projectFile?: {
-		url: string
-		fileName: string
-		fileSize: number
-	} | null
-	docFile?: {
-		url: string
-		fileName: string
-		fileSize: number
-	} | null
+	gradeValue?: number
+	gradedBy?: string
+	gradeComment?: string
+	gradeDate?: string
+	fileProject?: string | null
+	fileDocumentation?: string | null
 }
 
 export interface ProjectUI {
@@ -48,7 +45,7 @@ export interface ProjectUI {
 	typeName: string
 	subjectName: string
 	studentName: string
-	studentGroup: string
+	studentGroup?: string
 	teacherName: string
 	statusName: string
 

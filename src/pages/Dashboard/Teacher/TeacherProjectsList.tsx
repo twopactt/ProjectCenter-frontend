@@ -22,14 +22,10 @@ function TeacherProjectsList() {
 			{projects.map(p => (
 				<TeacherProjectCard
 					key={p.id}
-					id={p.id}
-					projectId={p.projectId}
 					projectTitle={p.projectTitle}
 					fullName={p.fullName}
 					groupName={p.groupName}
 					projectStatus={p.projectStatus}
-					grade={p.grade}
-					gradeComment={p.gradeComment}
 					onClick={() => navigate(`/dashboard/student-project/${p.projectId}`)}
 				/>
 			))}
