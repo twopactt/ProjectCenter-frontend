@@ -46,7 +46,7 @@ function ProjectsPage() {
 
 			const mapped: ProjectUI[] = data.map(p => ({
 				...p,
-				studentGroup: p.studentGroup || '',
+				studentGroup: p.studentGroup,
 				dateDeadline: new Date(p.dateDeadline),
 				createdDate: new Date(p.createdDate),
 				comments:
@@ -54,6 +54,16 @@ function ProjectsPage() {
 						...c,
 						date: new Date(c.date),
 					})) ?? [],
+				grade: p.gradeValue
+					? [
+							{
+								teacherFullName: p.gradedBy ?? '',
+								value: p.gradeValue,
+								comment: p.gradeComment ?? '',
+								createdAt: new Date(p.gradeDate ?? Date.now()),
+							},
+						]
+					: [],
 			}))
 			setProjects(mapped)
 		} catch (e) {
@@ -211,7 +221,6 @@ function ProjectsPage() {
 							{projects.map(p => (
 								<ProjectCard
 									key={p.id}
-									id={p.id}
 									title={p.title}
 									studentName={p.studentName}
 									studentGroup={p.studentGroup}

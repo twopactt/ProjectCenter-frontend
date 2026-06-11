@@ -49,8 +49,6 @@ function ForgotPasswordModal({ open, handleClose }: ForgotPasswordModalProps) {
 	const [code, setCode] = useState('')
 	const [codeError, setCodeError] = useState(false)
 
-	const [resetToken, setResetToken] = useState<string | null>(null)
-
 	const [password, setPassword] = useState('')
 	const [passwordError, setPasswordError] = useState(false)
 	const [passwordErrorText, setPasswordErrorText] = useState('')
@@ -65,7 +63,6 @@ function ForgotPasswordModal({ open, handleClose }: ForgotPasswordModalProps) {
 		setEmailError(false)
 		setCode('')
 		setCodeError(false)
-		setResetToken(null)
 		setPassword('')
 		setPasswordError(false)
 		setPasswordErrorText('')
@@ -114,7 +111,6 @@ function ForgotPasswordModal({ open, handleClose }: ForgotPasswordModalProps) {
 			return
 		}
 
-		setResetToken(res.resetToken)
 		showSuccess(res.message)
 		setStep(3)
 	}

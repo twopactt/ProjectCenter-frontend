@@ -160,6 +160,10 @@ function ProjectCard({
 						<DataList.ItemValue>{project.studentName}</DataList.ItemValue>
 					</DataList.Item>
 					<DataList.Item>
+						<DataList.ItemLabel>Группа</DataList.ItemLabel>
+						<DataList.ItemValue>{project.studentGroup}</DataList.ItemValue>
+					</DataList.Item>
+					<DataList.Item>
 						<DataList.ItemLabel>Преподаватель</DataList.ItemLabel>
 						<DataList.ItemValue>{project.teacherName}</DataList.ItemValue>
 					</DataList.Item>

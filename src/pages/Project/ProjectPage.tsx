@@ -33,6 +33,16 @@ function ProjectPage() {
 						...c,
 						date: new Date(c.date),
 					})) ?? [],
+				grade: item.gradeValue
+					? [
+							{
+								teacherFullName: item.gradedBy ?? '',
+								value: item.gradeValue,
+								comment: item.gradeComment ?? '',
+								createdAt: new Date(item.gradeDate ?? Date.now()),
+							},
+						]
+					: [],
 			})
 		}
 
