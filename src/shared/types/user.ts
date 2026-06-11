@@ -8,8 +8,8 @@ export interface UserResponse {
 	phone: string
 	role: string
 	photo: string | null
-	groupName: string
-	curatorName: string
+	groupDisplayName: string | null
+	curatorName: string | null
 }
 
 export interface CreateUserRequest {

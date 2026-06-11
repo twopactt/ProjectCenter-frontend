@@ -1,6 +1,8 @@
 import type {
-	ProjectRequest,
+	ProjectByStudentRequest,
+	ProjectByAdminRequest,
 	ProjectResponse,
+	AdminProjectUpdateRequest,
 	TeacherProjectResponse,
 } from '@/shared/types/project'
 import api from './axios'
@@ -83,6 +85,62 @@ export const getStudentProjectById = async (
 	}
 }
 
+export const createProjectByStudent = async (
+	projectData: ProjectByStudentRequest,
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.post<ProjectResponse>(`/projects`, projectData)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
+export const createProjectByAdmin = async (
+	projectData: ProjectByAdminRequest,
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.post<ProjectResponse>(
+			`/projects/admin`,
+			projectData,
+		)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
+export const updateProjectById = async (
+	id: number,
+	projectData: ProjectByStudentRequest,
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.put<ProjectResponse>(
+			`/projects/${id}`,
+			projectData,
+		)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
+export const updateProjectByAdmin = async (
+	id: number,
+	data: AdminProjectUpdateRequest,
+): Promise<ProjectResponse | null> => {
+	try {
+		const response = await api.put<ProjectResponse>(`/projects/${id}`, data)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
 export const updateStudentProjectById = async (
 	id: number,
 	data: {
@@ -104,37 +162,9 @@ export const updateStudentProjectById = async (
 	}
 }
 
-export const createProject = async (
-	projectData: ProjectRequest,
-): Promise<ProjectResponse | null> => {
-	try {
-		const response = await api.post<ProjectResponse>(`/projects`, projectData)
-		return response.data
-	} catch (e) {
-		console.error(e)
-		return null
-	}
-}
-
-export const updateProjectById = async (
-	id: number,
-	projectData: ProjectRequest,
-): Promise<ProjectResponse | null> => {
-	try {
-		const response = await api.put<ProjectResponse>(
-			`/projects/${id}`,
-			projectData,
-		)
-		return response.data
-	} catch (e) {
-		console.error(e)
-		return null
-	}
-}
-
 export const updateMyProject = async (
 	id: number,
-	projectData: ProjectRequest,
+	projectData: ProjectByStudentRequest,
 ): Promise<ProjectResponse | null> => {
 	try {
 		const response = await api.put<ProjectResponse>(

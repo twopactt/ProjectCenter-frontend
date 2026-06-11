@@ -1,6 +1,7 @@
 import type { TypeResponse } from '@/shared/types/typeProject'
 import type { SubjectResponse } from '@/shared/types/subject'
 import type { GroupResponse } from '@/shared/types/group'
+import type { StatusProjectResponse } from '@/shared/types/statusProject'
 import api from './axios'
 
 export const getTypes = async (): Promise<TypeResponse[]> => {
@@ -30,5 +31,30 @@ export const getGroups = async (): Promise<GroupResponse[]> => {
 	} catch (e) {
 		console.error(e)
 		return []
+	}
+}
+
+export const getStatuses = async (): Promise<StatusProjectResponse[]> => {
+	try {
+		const response =
+			await api.get<StatusProjectResponse[]>(`/directory/statuses`)
+		return response.data ?? []
+	} catch (e) {
+		console.error(e)
+		return []
+	}
+}
+
+export const createGroup = async (
+	name: string,
+): Promise<GroupResponse | null> => {
+	try {
+		const response = await api.post<GroupResponse>(`/directory/groups`, {
+			name,
+		})
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
 	}
 }

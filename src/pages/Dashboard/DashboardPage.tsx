@@ -2,7 +2,7 @@ import Header from '@/components/Header'
 import Layout from '@/components/Layout'
 import { getRole } from '@/services/auth'
 import { getSubjects, getTypes } from '@/services/directory'
-import { createProject, getMyProject } from '@/services/projects'
+import { createProjectByStudent, getMyProject } from '@/services/projects'
 import type { ProjectUI } from '@/shared/types/project'
 import { useEffect, useState } from 'react'
 import { createListCollection, Text } from '@chakra-ui/react'
@@ -32,8 +32,7 @@ function DashboardPage() {
 	}
 
 	useEffect(() => {
-		if (role === 'Student')
-		{
+		if (role === 'Student') {
 			const load = async () => {
 				const [myProjectData, typesData, subjectsData] = await Promise.all([
 					getMyProject(),
@@ -88,7 +87,7 @@ function DashboardPage() {
 	const handleCreate = async () => {
 		if (!title || !typeId || !subjectId) return
 
-		const response = await createProject({
+		const response = await createProjectByStudent({
 			title,
 			typeId: typeId!,
 			subjectId: subjectId!,

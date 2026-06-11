@@ -1,8 +1,18 @@
-export interface ProjectRequest {
+export interface ProjectByStudentRequest {
 	title: string
 	typeId: number
 	subjectId: number
 	isPublic: boolean
+}
+
+export interface ProjectByAdminRequest {
+	title: string
+	typeId: number
+	subjectId: number
+	isPublic: boolean
+	studentUserId: number
+	createdDate?: string
+	dateDeadline?: string
 }
 
 export interface ProjectResponse {
@@ -77,6 +87,19 @@ export interface ProjectGrade {
 	value: number
 	comment: string
 	createdAt: Date
+}
+
+export interface AdminProjectUpdateRequest {
+	title?: string
+	teacherId?: number
+	statusId?: number
+	typeId?: number
+	year?: number
+	subjectId?: number
+	fileProject?: string | null
+	fileDocumentation?: string | null
+	isPublic?: boolean
+	dateDeadline?: string
 }
 
 export interface TeacherProjectResponse {

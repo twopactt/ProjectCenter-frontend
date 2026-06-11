@@ -1,4 +1,8 @@
-import type { CreateUserRequest, UpdateUserRequest, UserResponse } from '@/shared/types/user'
+import type {
+	CreateUserRequest,
+	UpdateUserRequest,
+	UserResponse,
+} from '@/shared/types/user'
 import api from './axios'
 
 export const getUsers = async (): Promise<UserResponse[]> => {
@@ -11,8 +15,28 @@ export const getUsers = async (): Promise<UserResponse[]> => {
 	}
 }
 
+export const getActiveUsers = async (): Promise<UserResponse[]> => {
+	try {
+		const response = await api.get<UserResponse[]>('/users/active')
+		return response.data ?? []
+	} catch (e) {
+		console.error(e)
+		return []
+	}
+}
+
+export const getGraduatedUsers = async (): Promise<UserResponse[]> => {
+	try {
+		const response = await api.get<UserResponse[]>('/users/graduated')
+		return response.data ?? []
+	} catch (e) {
+		console.error(e)
+		return []
+	}
+}
+
 export const createUser = async (
-	data: CreateUserRequest
+	data: CreateUserRequest,
 ): Promise<UserResponse | null> => {
 	try {
 		const response = await api.post<UserResponse>('/users', data)
@@ -25,7 +49,7 @@ export const createUser = async (
 
 export const updateUser = async (
 	id: number,
-	data: UpdateUserRequest
+	data: UpdateUserRequest,
 ): Promise<UserResponse | null> => {
 	try {
 		const response = await api.put<UserResponse>(`/users/${id}`, data)
