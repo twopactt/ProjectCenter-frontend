@@ -1,66 +1,51 @@
-import { useEffect, useState } from 'react'
-import {
-	Button,
-	Text,
-	Table,
-	createListCollection,
-} from '@chakra-ui/react'
+import { useEffect, useState, useMemo } from 'react'
+import { Text, Table, createListCollection } from '@chakra-ui/react'
 import AdminLayout from '../AdminLayout'
-import { showSuccess, showError } from '@/shared/utils/toast'
-import { getProjects, deleteProject } from '@/services/projects'
+import { getProjects } from '@/services/projects'
 import { getTypes, getSubjects, getStatuses } from '@/services/directory'
-import { getUsers } from '@/services/users'
-import type { ProjectResponse } from '@/shared/types/project'
-import { StatusProjectBadge } from '@/components/StatusProjectBadge'
-import { ConfirmModal } from '@/components/ConfirmModal'
-import { LuPencil, LuTrash2 } from 'react-icons/lu'
+import { getTeachers } from '@/services/teachers'
+import { getStudents } from '@/services/students'
+import type { ProjectUI } from '@/shared/types/project'
+import type { TeacherResponse } from '@/shared/types/teacher'
+import type { StatusProjectResponse } from '@/shared/types/statusProject'
+import type { TypeResponse } from '@/shared/types/typeProject'
+import type { SubjectResponse } from '@/shared/types/subject'
+import type { StudentResponse } from '@/shared/types/student'
+import config from '@/services/config'
+import { transformProjectResponse } from '@/shared/helpers/projectTransform'
 import { CreateProjectModal } from './CreateProjectModal'
-import { EditProjectModal } from './EditProjectModal'
-
-type Item = { value: string; label: string }
+import AdminProjectCard from './AdminProjectCard'
 
 function AdminProjectsPage() {
-	const [projects, setProjects] = useState<ProjectResponse[]>([])
-	const [types, setTypes] = useState<Item[]>([])
-	const [subjects, setSubjects] = useState<Item[]>([])
-	const [statuses, setStatuses] = useState<Item[]>([])
-	const [students, setStudents] = useState<Item[]>([])
-	const [teachers, setTeachers] = useState<Item[]>([])
+	const [projects, setProjects] = useState<ProjectUI[]>([])
+	const [teachers, setTeachers] = useState<TeacherResponse[]>([])
+	const [statuses, setStatuses] = useState<StatusProjectResponse[]>([])
+	const [types, setTypes] = useState<TypeResponse[]>([])
+	const [subjects, setSubjects] = useState<SubjectResponse[]>([])
+	const [students, setStudents] = useState<StudentResponse[]>([])
 	const [loading, setLoading] = useState(true)
-
-	const [editProject, setEditProject] = useState<ProjectResponse | null>(null)
-	const [deleteTarget, setDeleteTarget] = useState<ProjectResponse | null>(null)
 
 	const fetchData = async () => {
 		setLoading(true)
-		const [projectsData, typesData, subjectsData, statusesData, usersData] =
+		const [projectsData, teachersData, typesData, subjectsData, statusesData, studentsData] =
 			await Promise.all([
 				getProjects(),
+				getTeachers(),
 				getTypes(),
 				getSubjects(),
 				getStatuses(),
-				getUsers(),
+				getStudents(),
 			])
-		setProjects(projectsData)
-		setTypes(typesData.map(t => ({ value: String(t.id), label: t.name })))
-		setSubjects(subjectsData.map(s => ({ value: String(s.id), label: s.name })))
-		setStatuses(statusesData.map(s => ({ value: String(s.id), label: s.name })))
-		setStudents(
-			usersData
-				.filter(u => u.role === 'Student')
-				.map(u => ({
-					value: String(u.id),
-					label: `${u.surname} ${u.name} ${u.patronymic}`,
-				})),
+
+		const transformed = await Promise.all(
+			projectsData.map(p => transformProjectResponse(p, config.api.staticUrl)),
 		)
-		setTeachers(
-			usersData
-				.filter(u => u.role === 'Teacher')
-				.map(u => ({
-					value: String(u.id),
-					label: `${u.surname} ${u.name} ${u.patronymic}`,
-				})),
-		)
+		setProjects(transformed)
+		setTeachers(teachersData)
+		setTypes(typesData)
+		setSubjects(subjectsData)
+		setStatuses(statusesData)
+		setStudents(studentsData)
 		setLoading(false)
 	}
 
@@ -68,23 +53,42 @@ function AdminProjectsPage() {
 		fetchData()
 	}, [])
 
-	const handleDelete = async () => {
-		if (!deleteTarget) return
-		const ok = await deleteProject(deleteTarget.id)
-		if (ok) {
-			showSuccess('Проект удалён')
-			setDeleteTarget(null)
-			fetchData()
-		} else {
-			showError('Ошибка при удалении проекта')
-		}
+	const handleUpdated = (updated: ProjectUI) => {
+		setProjects(prev => prev.map(p => (p.id === updated.id ? updated : p)))
 	}
 
-	const typeCollection = createListCollection({ items: types })
-	const subjectCollection = createListCollection({ items: subjects })
-	const statusCollection = createListCollection({ items: statuses })
-	const studentCollection = createListCollection({ items: students })
-	const teacherCollection = createListCollection({ items: teachers })
+	const typeCollection = useMemo(
+		() =>
+			createListCollection({
+				items: types.map(t => ({
+					value: String(t.id),
+					label: t.name,
+				})),
+			}),
+		[types],
+	)
+
+	const subjectCollection = useMemo(
+		() =>
+			createListCollection({
+				items: subjects.map(s => ({
+					value: String(s.id),
+					label: s.name,
+				})),
+			}),
+		[subjects],
+	)
+
+	const studentCollection = useMemo(
+		() =>
+			createListCollection({
+				items: students.map(s => ({
+					value: String(s.id),
+					label: `${s.surname} ${s.name} ${s.patronymic ?? ''}`,
+				})),
+			}),
+		[students],
+	)
 
 	return (
 		<AdminLayout>
@@ -126,75 +130,21 @@ function AdminProjectsPage() {
 							</Table.Header>
 							<Table.Body>
 								{projects.map(p => (
-									<Table.Row key={p.id}>
-										<Table.Cell>{p.id}</Table.Cell>
-										<Table.Cell className='text-wrap' title={p.title}>
-											{p.title}
-										</Table.Cell>
-										<Table.Cell>{p.studentName}</Table.Cell>
-										<Table.Cell>{p.studentGroup}</Table.Cell>
-										<Table.Cell>{p.teacherName || '—'}</Table.Cell>
-										<Table.Cell>
-											<StatusProjectBadge status={p.statusName} />
-										</Table.Cell>
-										<Table.Cell>{p.typeName}</Table.Cell>
-										<Table.Cell>{p.subjectName}</Table.Cell>
-										<Table.Cell>
-											{p.dateDeadline
-												? new Date(p.dateDeadline).toLocaleDateString('ru-RU')
-												: '—'}
-										</Table.Cell>
-										<Table.Cell>
-											<div className='flex gap-2'>
-												<Button
-													size='sm'
-													variant='surface'
-													colorPalette='blue'
-													onClick={() => setEditProject(p)}
-												>
-													<LuPencil />
-												</Button>
-												<Button
-													size='sm'
-													variant='surface'
-													colorPalette='red'
-													onClick={() => setDeleteTarget(p)}
-												>
-													<LuTrash2 />
-												</Button>
-											</div>
-										</Table.Cell>
-									</Table.Row>
+									<AdminProjectCard
+										key={p.id}
+										project={p}
+										teachers={teachers}
+										statuses={statuses}
+										types={types}
+										subjects={subjects}
+										onDeleted={fetchData}
+										onUpdated={handleUpdated}
+									/>
 								))}
 							</Table.Body>
 						</Table.Root>
 					</Table.ScrollArea>
 				</div>
-			)}
-
-			<ConfirmModal
-				isOpen={!!deleteTarget}
-				onClose={() => setDeleteTarget(null)}
-				onConfirm={handleDelete}
-				title='Удаление проекта'
-				message='Вы уверены, что хотите удалить проект? Это действие нельзя отменить.'
-				confirmText='Удалить'
-				confirmColor='red'
-			/>
-
-			{editProject && (
-				<EditProjectModal
-					project={editProject}
-					typeCollection={typeCollection}
-					subjectCollection={subjectCollection}
-					statusCollection={statusCollection}
-					teacherCollection={teacherCollection}
-					onClose={() => setEditProject(null)}
-					onUpdated={() => {
-						setEditProject(null)
-						fetchData()
-					}}
-				/>
 			)}
 		</AdminLayout>
 	)

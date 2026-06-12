@@ -15,6 +15,16 @@ export const getUsers = async (): Promise<UserResponse[]> => {
 	}
 }
 
+export const getUserById = async (id: number): Promise<UserResponse | null> => {
+	try {
+		const response = await api.get<UserResponse>(`/users/${id}`)
+		return response.data
+	} catch (e) {
+		console.error(e)
+		return null
+	}
+}
+
 export const getActiveUsers = async (): Promise<UserResponse[]> => {
 	try {
 		const response = await api.get<UserResponse[]>('/users/active')
