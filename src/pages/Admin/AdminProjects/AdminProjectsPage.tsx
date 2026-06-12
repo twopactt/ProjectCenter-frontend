@@ -1,5 +1,5 @@
-import { useEffect, useState, useMemo } from 'react'
-import { Text, Table, createListCollection } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { Text, Table } from '@chakra-ui/react'
 import AdminLayout from '../AdminLayout'
 import { getProjects } from '@/services/projects'
 import { getTypes, getSubjects, getStatuses } from '@/services/directory'
@@ -57,47 +57,14 @@ function AdminProjectsPage() {
 		setProjects(prev => prev.map(p => (p.id === updated.id ? updated : p)))
 	}
 
-	const typeCollection = useMemo(
-		() =>
-			createListCollection({
-				items: types.map(t => ({
-					value: String(t.id),
-					label: t.name,
-				})),
-			}),
-		[types],
-	)
-
-	const subjectCollection = useMemo(
-		() =>
-			createListCollection({
-				items: subjects.map(s => ({
-					value: String(s.id),
-					label: s.name,
-				})),
-			}),
-		[subjects],
-	)
-
-	const studentCollection = useMemo(
-		() =>
-			createListCollection({
-				items: students.map(s => ({
-					value: String(s.id),
-					label: `${s.surname} ${s.name} ${s.patronymic ?? ''}`,
-				})),
-			}),
-		[students],
-	)
-
 	return (
 		<AdminLayout>
 			<div className='flex items-center justify-between mb-6'>
 				<h3 className='font-bold text-2xl'>Управление проектами</h3>
 				<CreateProjectModal
-					typeCollection={typeCollection}
-					subjectCollection={subjectCollection}
-					studentCollection={studentCollection}
+					types={types}
+					subjects={subjects}
+					students={students}
 					onCreated={fetchData}
 				/>
 			</div>

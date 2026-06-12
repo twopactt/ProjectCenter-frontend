@@ -99,16 +99,19 @@ export const createProjectByStudent = async (
 
 export const createProjectByAdmin = async (
 	projectData: ProjectByAdminRequest,
-): Promise<ProjectResponse | null> => {
+): Promise<{ data: ProjectResponse } | { error: string }> => {
 	try {
 		const response = await api.post<ProjectResponse>(
 			`/projects/admin`,
 			projectData,
 		)
-		return response.data
+		return { data: response.data }
 	} catch (e) {
 		console.error(e)
-		return null
+		const message =
+			(e as { response?: { data?: { error?: string } } })?.response?.data
+				?.error || 'Неизвестная ошибка'
+		return { error: message }
 	}
 }
 
