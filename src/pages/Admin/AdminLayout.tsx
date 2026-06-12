@@ -1,16 +1,18 @@
 import type { ReactNode } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import Layout from '@/components/Layout'
+import { Button } from '@chakra-ui/react'
+import { LuFolder, LuLayoutDashboard, LuUsers, LuGroup } from 'react-icons/lu'
 
 interface Props {
 	children: ReactNode
 }
 
 const navItems = [
-	{ path: '/admin', label: 'Дашборд' },
-	{ path: '/admin/projects', label: 'Проекты' },
-	{ path: '/admin/users', label: 'Пользователи' },
-	{ path: '/admin/groups', label: 'Группы' },
+	{ path: '/admin', label: 'Дашборд', icon: LuLayoutDashboard },
+	{ path: '/admin/projects', label: 'Проекты', icon: LuFolder },
+	{ path: '/admin/users', label: 'Пользователи', icon: LuUsers },
+	{ path: '/admin/groups', label: 'Группы', icon: LuGroup },
 ]
 
 function AdminLayout({ children }: Props) {
@@ -20,28 +22,49 @@ function AdminLayout({ children }: Props) {
 	return (
 		<Layout>
 			<div className='flex min-h-[calc(100vh-5rem)]'>
-				<aside className='w-56 shrink-0 border-r p-4 hidden md:block'>
+				<aside className='w-56 shrink-0 border-r p-4 max-md:hidden'>
 					<nav className='flex flex-col gap-1'>
 						{navItems.map(item => {
 							const isActive = location.pathname === item.path
+							const Icon = item.icon
 							return (
-								<button
+								<Button
 									key={item.path}
 									onClick={() => navigate(item.path)}
-									className={`text-left px-4 py-2.5 rounded-lg text-sm transition-colors cursor-pointer ${
-										isActive
-											? 'bg-blue-100 text-blue-700 font-medium dark:bg-blue-900 dark:text-blue-300'
-											: 'hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300'
-									}`}
+									variant={isActive ? 'subtle' : 'ghost'}
+									colorPalette={isActive ? 'blue' : 'gray'}
+									justifyContent='left'
+									className='px-4 py-2.5 rounded-lg'
 								>
+									<Icon />
 									{item.label}
-								</button>
+								</Button>
 							)
 						})}
 					</nav>
 				</aside>
 
-				<div className='flex-1 p-4 md:p-6 overflow-auto'>{children}</div>
+				<div className='flex-1 min-w-0 p-4 md:p-6 overflow-auto'>
+					<nav className='flex gap-2 overflow-x-auto pb-3 mb-4 md:hidden'>
+						{navItems.map(item => {
+							const isActive = location.pathname === item.path
+							const Icon = item.icon
+							return (
+								<Button
+									key={item.path}
+									onClick={() => navigate(item.path)}
+									variant={isActive ? 'subtle' : 'ghost'}
+									colorPalette={isActive ? 'blue' : 'gray'}
+									className='px-4 py-2 rounded-full whitespace-nowrap'
+								>
+									<Icon />
+									{item.label}
+								</Button>
+							)
+						})}
+					</nav>
+					{children}
+				</div>
 			</div>
 		</Layout>
 	)
