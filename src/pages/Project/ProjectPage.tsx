@@ -15,6 +15,7 @@ moment.locale('ru')
 function ProjectPage() {
 	const { id } = useParams()
 	const [project, setProject] = useState<ProjectUI | null>(null)
+	const [notFound, setNotFound] = useState(false)
 	const navigate = useNavigate()
 
 	useEffect(() => {
@@ -22,7 +23,10 @@ function ProjectPage() {
 			const data = await getProjects()
 			const item = data.find(x => x.id === Number(id))
 
-			if (!item) return
+			if (!item) {
+				setNotFound(true)
+				return
+			}
 
 			setProject({
 				...item,
@@ -49,6 +53,21 @@ function ProjectPage() {
 		load()
 	}, [id])
 
+	if (notFound) {
+		return (
+			<Layout>
+				<Header />
+				<section className='px-4 md:px-8 py-6 flex flex-col items-center gap-10'>
+					<p className='text-lg'>Проект не найден или недоступен</p>
+					<Button variant='outline' onClick={() => navigate('/projects')}>
+						<LuArrowLeft />
+						Назад к проектам
+					</Button>
+				</section>
+			</Layout>
+		)
+	}
+
 	if (!project) return null
 
 	return (
@@ -58,7 +77,7 @@ function ProjectPage() {
 			<section className='px-4 md:px-8 py-6 flex flex-col md:flex-row items-start w-full gap-2 md:gap-4'>
 				<Button
 					variant='outline'
-					onClick={() => navigate(-1)}
+					onClick={() => navigate('/projects')}
 					className='self-start md:sticky md:top-24 mb-4 md:mb-0 w-auto'
 				>
 					<LuArrowLeft />
