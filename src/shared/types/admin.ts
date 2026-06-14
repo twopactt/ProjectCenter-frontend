@@ -12,11 +12,33 @@ export interface AdminDashboardResponse {
     count: number
   }>
   projectsByType: Array<{
-    statusName: string
+    typeName: string
     count: number
   }>
-  projectsByMonth: Array<{
-    month: string
-    count: number
+  projectsByGroup: Array<{
+    groupName: string
+    totalProjects: number
+    studentsCount: number
   }>
+}
+
+export interface AdminLastProject {
+  id: number
+  title: string
+  studentName: string
+  statusName: string
+  createdDate: string
+}
+
+export interface AdminActiveTeacher {
+  teacherName: string
+  projectCount: number
+}
+
+export interface AdminRecentActivity {
+  type: string
+  description: string
+  userName: string
+  projectTitle: string
+  date: string
 }

@@ -20,9 +20,9 @@ function AdminDashboard() {
 		)
 	}
 
-	const maxStatusCount = Math.max(...data.projectsByStatus.map(s => s.count), 1)
-	const maxTypeCount = Math.max(...data.projectsByType.map(s => s.count), 1)
-	const maxMonthCount = Math.max(...data.projectsByMonth.map(m => m.count), 1)
+	const maxStatusCount = Math.max(...(data.projectsByStatus?.map(s => s.count) ?? [1]), 1)
+	const maxTypeCount = Math.max(...(data.projectsByType?.map(s => s.count) ?? [1]), 1)
+	const maxGroupProjects = Math.max(...(data.projectsByGroup?.map(g => g.totalProjects) ?? [1]), 1)
 
 	return (
 		<div className='flex flex-col gap-6 w-full'>
@@ -62,7 +62,7 @@ function AdminDashboard() {
 					</Card.Header>
 					<Card.Body>
 						<Stack gap={3}>
-							{data.projectsByStatus.map(s => (
+							{data.projectsByStatus?.map(s => (
 								<BarRow
 									key={s.statusName}
 									label={s.statusName}
@@ -84,10 +84,10 @@ function AdminDashboard() {
 					</Card.Header>
 					<Card.Body>
 						<Stack gap={3}>
-							{data.projectsByType.map(t => (
+							{data.projectsByType?.map(t => (
 								<BarRow
-									key={t.statusName}
-									label={t.statusName}
+									key={t.typeName}
+									label={t.typeName}
 									count={t.count}
 									max={maxTypeCount}
 									color='bg-purple-500'
@@ -102,25 +102,25 @@ function AdminDashboard() {
 					_hover={{ bg: 'gray.100', _dark: { bg: 'gray.800' } }}
 				>
 					<Card.Header>
-						<Card.Title>Проекты по месяцам</Card.Title>
+						<Card.Title>Проекты по группам</Card.Title>
 					</Card.Header>
 					<Card.Body>
 						<Stack gap={2}>
-							{data.projectsByMonth.map(m => (
-								<HStack key={m.month} gap={3}>
-									<Text fontSize='sm' w='8'>
-										{m.month}
+							{data.projectsByGroup?.map(g => (
+								<HStack key={g.groupName} gap={3}>
+									<Text fontSize='sm' w='20' className='truncate'>
+										{g.groupName}
 									</Text>
 									<div className='flex-1 bg-gray-200 rounded-full h-4 overflow-hidden'>
 										<div
 											className='bg-green-500 h-full rounded-full transition-all'
 											style={{
-												width: `${(m.count / maxMonthCount) * 100}%`,
+												width: `${(g.totalProjects / maxGroupProjects) * 100}%`,
 											}}
 										/>
 									</div>
 									<Text fontSize='sm' fontWeight='bold' w='6' textAlign='right'>
-										{m.count}
+										{g.totalProjects}
 									</Text>
 								</HStack>
 							))}
