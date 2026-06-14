@@ -10,6 +10,8 @@ export interface UserResponse {
 	photo: string | null
 	groupDisplayName: string | null
 	curatorName: string | null
+	dateEnrolled?: string
+	dateGraduated?: string | null
 }
 
 export interface CreateUserRequest {
@@ -24,6 +26,7 @@ export interface CreateUserRequest {
 	photo: string | null
 	groupId: number
 	teacherId: number
+	dateEnrolled?: string
 }
 
 export interface UpdateUserRequest {
@@ -36,4 +39,6 @@ export interface UpdateUserRequest {
 	photoPath: string | null
 	groupId: number
 	curatorId: number
+	dateEnrolled?: string
+	dateGraduated?: string | null
 }

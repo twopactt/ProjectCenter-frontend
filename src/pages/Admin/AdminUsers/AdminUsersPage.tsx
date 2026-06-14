@@ -1,73 +1,43 @@
 import { useEffect, useState } from 'react'
-import {
-	Button,
-	Text,
-	Tabs,
-	Table,
-	createListCollection,
-} from '@chakra-ui/react'
+import { Text, Table, Tabs } from '@chakra-ui/react'
 import AdminLayout from '../AdminLayout'
-import { showSuccess, showError } from '@/shared/utils/toast'
-import {
-	getActiveUsers,
-	getGraduatedUsers,
-	deleteUser,
-} from '@/services/users'
+import { getActiveUsers, getGraduatedUsers } from '@/services/users'
 import { getGroups } from '@/services/directory'
+import { getTeachers } from '@/services/teachers'
+import { useAuth } from '@/store/auth'
 import type { UserResponse } from '@/shared/types/user'
 import type { GroupResponse } from '@/shared/types/group'
-import { LuPencil, LuTrash2 } from 'react-icons/lu'
-import { UserRoleBadge } from '@/components/UserRoleBadge'
-import { ConfirmModal } from '@/components/ConfirmModal'
-import { CreateUserModal } from './CreateUserModal'
-import { EditUserModal } from './EditUserModal'
-
-type Item = { value: string; label: string }
+import type { TeacherResponse } from '@/shared/types/teacher'
+import CreateUserModal from './CreateUserModal'
+import AdminUserCard from './AdminUserCard'
 
 function AdminUsersPage() {
+	const profile = useAuth(s => s.user)
 	const [activeUsers, setActiveUsers] = useState<UserResponse[]>([])
 	const [graduatedUsers, setGraduatedUsers] = useState<UserResponse[]>([])
-	const [groups, setGroups] = useState<Item[]>([])
+	const [groups, setGroups] = useState<GroupResponse[]>([])
+	const [teachers, setTeachers] = useState<TeacherResponse[]>([])
 	const [tab, setTab] = useState('active')
 	const [loading, setLoading] = useState(true)
-	const [editUser, setEditUser] = useState<UserResponse | null>(null)
-	const [deleteTarget, setDeleteTarget] = useState<UserResponse | null>(null)
 
 	const fetchData = async () => {
 		setLoading(true)
-		const [active, graduated, groupsData] = await Promise.all([
+		const [active, graduated, groupsData, teachersData] = await Promise.all([
 			getActiveUsers(),
 			getGraduatedUsers(),
 			getGroups(),
+			getTeachers(),
 		])
 		setActiveUsers(active)
 		setGraduatedUsers(graduated)
-		setGroups(
-			groupsData.map((g: GroupResponse) => ({
-				value: String(g.id),
-				label: g.name,
-			})),
-		)
+		setGroups(groupsData)
+		setTeachers(teachersData)
 		setLoading(false)
 	}
 
 	useEffect(() => {
 		fetchData()
 	}, [])
-
-	const handleDelete = async () => {
-		if (!deleteTarget) return
-		const ok = await deleteUser(deleteTarget.id)
-		if (ok) {
-			showSuccess('Пользователь удалён')
-			setDeleteTarget(null)
-			fetchData()
-		} else {
-			showError('Ошибка при удалении')
-		}
-	}
-
-	const groupCollection = createListCollection({ items: groups })
 
 	const users = tab === 'active' ? activeUsers : graduatedUsers
 
@@ -76,7 +46,8 @@ function AdminUsersPage() {
 			<div className='flex items-center justify-between mb-6'>
 				<h3 className='font-bold text-2xl'>Управление пользователями</h3>
 				<CreateUserModal
-					groupCollection={groupCollection}
+					groups={groups}
+					teachers={teachers}
 					onCreated={fetchData}
 				/>
 			</div>
@@ -118,73 +89,20 @@ function AdminUsersPage() {
 						</Table.Header>
 						<Table.Body>
 							{users.map(u => (
-								<Table.Row key={u.id}>
-									<Table.Cell>{u.id}</Table.Cell>
-									<Table.Cell>
-										{u.surname} {u.name} {u.patronymic}
-									</Table.Cell>
-									<Table.Cell>{u.login}</Table.Cell>
-									<Table.Cell>{u.email}</Table.Cell>
-									<Table.Cell>{u.phone}</Table.Cell>
-									<Table.Cell>
-										<UserRoleBadge
-											role={
-												u.role === 'Student'
-													? 'Студент'
-													: u.role === 'Teacher'
-														? 'Преподаватель'
-														: 'Админ'
-											}
-										/>
-									</Table.Cell>
-									<Table.Cell>{u.groupDisplayName || '—'}</Table.Cell>
-									<Table.Cell>
-										<div className='flex gap-2'>
-											<Button
-												size='sm'
-												variant='surface'
-												colorPalette='blue'
-												onClick={() => setEditUser(u)}
-											>
-												<LuPencil />
-											</Button>
-											<Button
-												size='sm'
-												variant='surface'
-												colorPalette='red'
-												onClick={() => setDeleteTarget(u)}
-											>
-												<LuTrash2 />
-											</Button>
-										</div>
-									</Table.Cell>
-								</Table.Row>
+								<AdminUserCard
+									key={u.id}
+									user={u}
+									groups={groups}
+									teachers={teachers}
+									currentUserId={profile?.id ?? 0}
+									showDelete={tab !== 'graduated'}
+									onDeleted={fetchData}
+									onUpdated={fetchData}
+								/>
 							))}
 						</Table.Body>
 					</Table.Root>
 				</Table.ScrollArea>
-			)}
-
-			<ConfirmModal
-				isOpen={!!deleteTarget}
-				onClose={() => setDeleteTarget(null)}
-				onConfirm={handleDelete}
-				title='Удаление пользователя'
-				message='Вы уверены, что хотите удалить пользователя? Это действие нельзя отменить.'
-				confirmText='Удалить'
-				confirmColor='red'
-			/>
-
-			{editUser && (
-				<EditUserModal
-					user={editUser}
-					groupCollection={groupCollection}
-					onClose={() => setEditUser(null)}
-					onUpdated={() => {
-						setEditUser(null)
-						fetchData()
-					}}
-				/>
 			)}
 		</AdminLayout>
 	)

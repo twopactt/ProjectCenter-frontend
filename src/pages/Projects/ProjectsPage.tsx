@@ -133,6 +133,7 @@ function ProjectsPage() {
 
 					<Field.Root className='w-full md:w-48'>
 						<DatePicker.Root
+							locale='ru-RU'
 							value={getYearValue()}
 							onValueChange={e => {
 								if (e.value && e.value.length > 0) {

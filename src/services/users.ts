@@ -5,6 +5,10 @@ import type {
 } from '@/shared/types/user'
 import api from './axios'
 
+const extractError = (e: unknown): string =>
+	(e as { response?: { data?: { error?: string } } })?.response?.data
+		?.error || 'Неизвестная ошибка'
+
 export const getUsers = async (): Promise<UserResponse[]> => {
 	try {
 		const response = await api.get<UserResponse[]>('/users')
@@ -47,26 +51,26 @@ export const getGraduatedUsers = async (): Promise<UserResponse[]> => {
 
 export const createUser = async (
 	data: CreateUserRequest,
-): Promise<UserResponse | null> => {
+): Promise<{ data: UserResponse } | { error: string }> => {
 	try {
 		const response = await api.post<UserResponse>('/users', data)
-		return response.data
+		return { data: response.data }
 	} catch (e) {
 		console.error(e)
-		return null
+		return { error: extractError(e) }
 	}
 }
 
 export const updateUser = async (
 	id: number,
 	data: UpdateUserRequest,
-): Promise<UserResponse | null> => {
+): Promise<{ data: UserResponse } | { error: string }> => {
 	try {
 		const response = await api.put<UserResponse>(`/users/${id}`, data)
-		return response.data
+		return { data: response.data }
 	} catch (e) {
 		console.error(e)
-		return null
+		return { error: extractError(e) }
 	}
 }
 

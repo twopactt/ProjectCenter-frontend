@@ -228,11 +228,7 @@ export function CreateProjectModal({
 	}
 
 	return (
-		<Dialog.Root
-			open={open}
-			placement='center'
-			scrollBehavior='inside'
-		>
+		<Dialog.Root open={open} placement='center' scrollBehavior='inside'>
 			<Dialog.Trigger asChild>
 				<Button className='cursor-pointer' onClick={() => setOpen(true)}>
 					Создать
@@ -359,9 +355,7 @@ export function CreateProjectModal({
 									<Portal>
 										<Combobox.Positioner>
 											<Combobox.Content>
-												<Combobox.Empty>
-													Студент не найден
-												</Combobox.Empty>
+												<Combobox.Empty>Студент не найден</Combobox.Empty>
 												{studentCollection.items.map(item => (
 													<Combobox.Item item={item} key={item.value}>
 														{item.label}
@@ -390,6 +384,7 @@ export function CreateProjectModal({
 							</Switch.Root>
 							<Field.Root>
 								<DatePicker.Root
+									locale='ru-RU'
 									value={getDateValue(createdDate)}
 									format={date => date.toString()}
 									onValueChange={e => {
@@ -414,6 +409,14 @@ export function CreateProjectModal({
 													<DatePicker.Header />
 													<DatePicker.DayTable />
 												</DatePicker.View>
+												<DatePicker.View view='month'>
+													<DatePicker.Header />
+													<DatePicker.MonthTable />
+												</DatePicker.View>
+												<DatePicker.View view='year'>
+													<DatePicker.Header />
+													<DatePicker.YearTable />
+												</DatePicker.View>
 											</DatePicker.Content>
 										</DatePicker.Positioner>
 									</Portal>
@@ -421,6 +424,7 @@ export function CreateProjectModal({
 							</Field.Root>
 							<Field.Root invalid={dateError}>
 								<DatePicker.Root
+									locale='ru-RU'
 									value={getDateValue(dateDeadline)}
 									min={parseDate(createdDate)}
 									format={date => date.toString()}
@@ -445,6 +449,14 @@ export function CreateProjectModal({
 												<DatePicker.View view='day'>
 													<DatePicker.Header />
 													<DatePicker.DayTable />
+												</DatePicker.View>
+												<DatePicker.View view='month'>
+													<DatePicker.Header />
+													<DatePicker.MonthTable />
+												</DatePicker.View>
+												<DatePicker.View view='year'>
+													<DatePicker.Header />
+													<DatePicker.YearTable />
 												</DatePicker.View>
 											</DatePicker.Content>
 										</DatePicker.Positioner>

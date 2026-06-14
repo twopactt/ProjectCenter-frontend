@@ -425,9 +425,7 @@ function EditProjectModal({
 									<Portal>
 										<Combobox.Positioner>
 											<Combobox.Content>
-												<Combobox.Empty>
-													Преподаватель не найден
-												</Combobox.Empty>
+												<Combobox.Empty>Преподаватель не найден</Combobox.Empty>
 												{teacherCollection.items.map(item => (
 													<Combobox.Item item={item} key={item.value}>
 														{item.label}
@@ -456,6 +454,7 @@ function EditProjectModal({
 							</Switch.Root>
 							<Field.Root invalid={dateError}>
 								<DatePicker.Root
+									locale='ru-RU'
 									value={getDateValue()}
 									min={parseDate(initialData.createdDate)}
 									format={date => date.toString()}
@@ -480,6 +479,14 @@ function EditProjectModal({
 												<DatePicker.View view='day'>
 													<DatePicker.Header />
 													<DatePicker.DayTable />
+												</DatePicker.View>
+												<DatePicker.View view='month'>
+													<DatePicker.Header />
+													<DatePicker.MonthTable />
+												</DatePicker.View>
+												<DatePicker.View view='year'>
+													<DatePicker.Header />
+													<DatePicker.YearTable />
 												</DatePicker.View>
 											</DatePicker.Content>
 										</DatePicker.Positioner>
