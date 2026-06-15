@@ -46,6 +46,13 @@ function Header() {
 			},
 		},
 		{
+			title: 'Конфиденциальность',
+			action: () => {
+				navigate('/privacy')
+				setIsMobileMenuOpen(false)
+			},
+		},
+		{
 			title: 'Выйти',
 			action: () => {
 				logout()
@@ -242,6 +249,14 @@ function Header() {
 										_dark={{ color: 'gray.400' }}
 									>
 										Профиль
+									</Link>
+									<Link
+										onClick={() => handleNavClick('/privacy')}
+										className='cursor-pointer font-medium text-lg py-2'
+										color='gray.600'
+										_dark={{ color: 'gray.400' }}
+									>
+										Конфиденциальность
 									</Link>
 									<Link
 										onClick={() => logout()}

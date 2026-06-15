@@ -3,6 +3,7 @@ import ProjectPage from '@/pages/Project/ProjectPage'
 import DashboardPage from '@/pages/Dashboard/DashboardPage'
 import ProfilePage from '@/pages/Profile/ProfilePage'
 import NotificationsPage from '@/pages/Notifications/NotificationsPage'
+import PrivacyPage from '@/pages/Privacy/PrivacyPage'
 import AdminPage from '@/pages/Admin/AdminPage'
 import AdminProjectsPage from '@/pages/Admin/AdminProjects/AdminProjectsPage'
 import AdminUsersPage from '@/pages/Admin/AdminUsers/AdminUsersPage'
@@ -27,6 +28,7 @@ export const routes: RoutesGroup[] = [
 			{ path: '/projects', element: <ProjectsPage /> },
 			{ path: '/profile', element: <ProfilePage /> },
 			{ path: '/notifications', element: <NotificationsPage /> },
+			{ path: '/privacy', element: <PrivacyPage /> },
 			{ path: '/dashboard', element: <DashboardPage /> },
 			{ path: '/projects/:id', element: <ProjectPage /> },
 		],

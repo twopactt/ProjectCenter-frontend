@@ -4,7 +4,6 @@ import { useAuth } from '@/store/auth'
 import {
 	Button,
 	Card,
-	Checkbox,
 	Field,
 	FieldErrorText,
 	Input,
@@ -14,6 +13,7 @@ import {
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import ForgotPasswordModal from './ForgotPasswordModal'
+import CookieConsentModal from './CookieConsentModal'
 import { PasswordInput } from '@/components/ui/password-input'
 import { showError } from '@/shared/utils/toast'
 
@@ -25,6 +25,7 @@ function SignInPage() {
 	const [passwordError, setPasswordError] = useState(false)
 	const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
 	const [open, setOpen] = useState(false)
+	const [cookieOpen, setCookieOpen] = useState(false)
 	const navigate = useNavigate()
 	const setUser = useAuth(s => s.setUser)
 
@@ -118,13 +119,6 @@ function SignInPage() {
 									<FieldErrorText>{passwordErrorMessage}</FieldErrorText>
 								)}
 							</Field.Root>
-							<Field.Root>
-								<Checkbox.Root>
-									<Checkbox.HiddenInput />
-									<Checkbox.Control />
-									<Checkbox.Label>Запомнить меня</Checkbox.Label>
-								</Checkbox.Root>
-							</Field.Root>
 						</Stack>
 					</Card.Body>
 					<Card.Footer className='justify-center flex flex-col gap-3'>
@@ -139,6 +133,17 @@ function SignInPage() {
 							Забыли пароль?
 						</Link>
 						<ForgotPasswordModal open={open} handleClose={handleClose} />
+						<Link
+							type='button'
+							onClick={() => setCookieOpen(true)}
+							className='flex'
+						>
+							Уведомление о файлах cookie
+						</Link>
+						<CookieConsentModal
+							open={cookieOpen}
+							onClose={() => setCookieOpen(false)}
+						/>
 					</Card.Footer>
 				</Card.Root>
 			</div>
