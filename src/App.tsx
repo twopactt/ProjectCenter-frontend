@@ -1,7 +1,8 @@
 import './App.css'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { ColorModeProvider } from '@/components/ui/color-mode'
 import { Toaster } from '@/components/ui/toaster'
+import WelcomePage from './pages/Welcome/WelcomePage'
 import SignInPage from './pages/SignIn/SignInPage'
 import ProtectedRoute from './shared/utils/ProtectedRoute'
 import { routes, type RoutesGroup } from '@/shared/utils/routes'
@@ -13,7 +14,7 @@ function App() {
 			<Toaster />
 			<BrowserRouter>
 				<Routes>
-					<Route path='/' element={<Navigate to={'/login'} />} />
+					<Route path='/' element={<WelcomePage />} />
 					<Route path='/login' element={<SignInPage />} />
 					{routes.map((group: RoutesGroup) =>
 						group.items.map(item => (
