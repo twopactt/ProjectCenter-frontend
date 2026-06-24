@@ -4,12 +4,14 @@ import {
 	Dialog,
 	FileUpload,
 	Float,
+	Progress,
 	Switch,
 	Text,
 	useFileUploadContext,
 } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { LuFile, LuUpload, LuX } from 'react-icons/lu'
+import { showError } from '@/shared/utils/toast'
 
 interface Props {
 	isOpen: boolean
@@ -64,6 +66,9 @@ function EditProjectModal({
 	const [docFiles, setDocFiles] = useState<File[]>([])
 	const [removeProjectFile, setRemoveProjectFile] = useState(false)
 	const [removeDocFile, setRemoveDocFile] = useState(false)
+	const [loading, setLoading] = useState(false)
+	const [progress, setProgress] = useState(0)
+	const [error, setError] = useState('')
 
 	useEffect(() => {
 		if (isOpen) {
@@ -72,10 +77,32 @@ function EditProjectModal({
 			setDocFiles(existingDocFile ? [existingDocFile] : [])
 			setRemoveProjectFile(false)
 			setRemoveDocFile(false)
+			setError('')
 		}
 	}, [isOpen, isPublic, existingProjectFile, existingDocFile])
 
 	const handleSave = async () => {
+		const newProjectFile =
+			projectFiles.length > 0 && projectFiles[0] !== existingProjectFile
+				? projectFiles[0]
+				: null
+		const newDocFile =
+			docFiles.length > 0 && docFiles[0] !== existingDocFile
+				? docFiles[0]
+				: null
+
+		if (newProjectFile && newProjectFile.size > 50 * 1024 * 1024) {
+			showError('Файл проекта не должен превышать 50 MB')
+			return
+		}
+		if (newDocFile && newDocFile.size > 10 * 1024 * 1024) {
+			showError('Файл документации не должен превышать 10 MB')
+			return
+		}
+
+		setLoading(true)
+		setProgress(0)
+
 		const form = new FormData()
 		form.append('IsPublic', publicVal.toString())
 
@@ -85,16 +112,18 @@ function EditProjectModal({
 		if (removeDocFile) {
 			form.append('RemoveDocumentationFile', 'true')
 		}
-		if (projectFiles.length > 0 && projectFiles[0] !== existingProjectFile) {
-			form.append('NewProjectFile', projectFiles[0])
+		if (newProjectFile) {
+			form.append('NewProjectFile', newProjectFile)
 		}
-		if (docFiles.length > 0 && docFiles[0] !== existingDocFile) {
-			form.append('NewDocumentationFile', docFiles[0])
+		if (newDocFile) {
+			form.append('NewDocumentationFile', newDocFile)
 		}
 
-		const updated = await updateMyProjectFiles(projectId, form)
+		const result = await updateMyProjectFiles(projectId, form, setProgress)
 
-		if (updated) {
+		setLoading(false)
+
+		if ('data' in result) {
 			onUpdated({
 				isPublic: publicVal,
 				projectFile: projectFiles,
@@ -102,6 +131,8 @@ function EditProjectModal({
 				removeProjectFile,
 				removeDocFile,
 			})
+		} else {
+			setError(result.error)
 		}
 	}
 
@@ -135,6 +166,10 @@ function EditProjectModal({
 						<FileUpload.Root
 							accept={['.zip', '.rar', '.7z']}
 							onFileAccept={({ files }) => {
+								if (files[0]?.size > 50 * 1024 * 1024) {
+									showError('Файл проекта не должен превышать 50 MB')
+									return
+								}
 								setProjectFiles(files)
 								setRemoveProjectFile(false)
 							}}
@@ -166,6 +201,10 @@ function EditProjectModal({
 						<FileUpload.Root
 							accept={['.pdf', '.doc', '.docx', '.txt']}
 							onFileAccept={({ files }) => {
+								if (files[0]?.size > 10 * 1024 * 1024) {
+									showError('Файл документации не должен превышать 10 MB')
+									return
+								}
 								setDocFiles(files)
 								setRemoveDocFile(false)
 							}}
@@ -192,11 +231,30 @@ function EditProjectModal({
 							<FileList />
 						</FileUpload.Root>
 					</Dialog.Body>
+					{loading && (
+						<div className='px-6 pb-2'>
+							<Progress.Root value={progress} maxW='full' size='sm'>
+								<Progress.Track>
+									<Progress.Range />
+								</Progress.Track>
+							</Progress.Root>
+							<Text textStyle='sm' mt={1} textAlign='center'>
+								Загрузка... {progress}%
+							</Text>
+						</div>
+					)}
+					{error && (
+						<Text color='red' className='px-6 pb-2' textStyle='sm'>
+							{error}
+						</Text>
+					)}
 					<Dialog.Footer className='flex gap-3 justify-end'>
 						<Button variant='ghost' onClick={onClose}>
 							Отмена
 						</Button>
-						<Button onClick={handleSave}>Сохранить</Button>
+						<Button loading={loading} onClick={handleSave}>
+							Сохранить
+						</Button>
 					</Dialog.Footer>
 				</Dialog.Content>
 			</Dialog.Positioner>

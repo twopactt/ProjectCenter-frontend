@@ -184,13 +184,27 @@ export const updateMyProject = async (
 export const updateMyProjectFiles = async (
 	id: number,
 	data: FormData,
-): Promise<ProjectResponse | null> => {
+	onProgress?: (progress: number) => void,
+): Promise<{ data: ProjectResponse } | { error: string }> => {
 	try {
-		const response = await api.put<ProjectResponse>(`/projects/my/${id}`, data)
-		return response.data
+		const response = await api.put<ProjectResponse>(
+			`/projects/my/${id}`,
+			data,
+			{
+				onUploadProgress: e => {
+					if (e.total && onProgress) {
+						onProgress(Math.round((e.loaded * 100) / e.total))
+					}
+				},
+			},
+		)
+		return { data: response.data }
 	} catch (e) {
 		console.error(e)
-		return null
+		const message =
+			(e as { response?: { data?: { message?: string } } })?.response?.data
+				?.message || 'Ошибка при загрузке файлов'
+		return { error: message }
 	}
 }
 
